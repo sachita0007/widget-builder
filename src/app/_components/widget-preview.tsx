@@ -44,6 +44,9 @@ interface WidgetPreviewProps {
     config: {
         primaryColor: string;
         secondaryColor: string;
+        starColor?: string;
+        reviewTextColor?: string;
+        nameColor?: string;
         fontStyle: string;
         showBadge: boolean;
         cornerRadius: string;
@@ -119,7 +122,7 @@ export function WidgetPreview({ widgetId, template, config }: WidgetPreviewProps
 
 
 function AggregatedTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, cornerRadius, showBadge } = config;
+    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
 
     // Calculate stats
     const total = reviews.length;
@@ -135,12 +138,12 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
                     <div className="flex items-center gap-4 mb-4">
                         <span className="text-6xl font-black tracking-tighter" style={{ color: primaryColor }}>{avg}</span>
                         <div className="text-left">
-                            <div className="flex text-yellow-400 text-2xl gap-0.5 mb-1">
+                            <div className="flex text-2xl gap-0.5 mb-1" style={{ color: starColor }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={i < Math.round(Number(avg)) ? "text-yellow-400" : "text-gray-200"}>★</span>
+                                    <span key={i} className={i < Math.round(Number(avg)) ? "" : "text-gray-200"}>★</span>
                                 ))}
                             </div>
-                            <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">{total} Verified Reviews</span>
+                            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: reviewTextColor }}>{total} Verified Reviews</span>
                         </div>
                     </div>
                 </div>
@@ -172,7 +175,7 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
                             <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white shadow-lg shadow-blue-500/20">
                                 ✓
                             </div>
-                            <span className="text-xs font-black text-gray-900 uppercase tracking-wider">Freestand Verified</span>
+                            <span className="text-xs font-black uppercase tracking-wider" style={{ color: nameColor }}>Freestand Verified</span>
                         </div>
                         <div className="px-3 py-1 bg-green-50 rounded-full">
                             <span className="text-[10px] font-black text-green-600 uppercase">100% Authentic</span>
@@ -188,6 +191,9 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     const {
         primaryColor,
         secondaryColor,
+        starColor,
+        nameColor,
+        reviewTextColor,
         cornerRadius,
         showBadge,
         layoutType = 'GRID',
@@ -244,26 +250,26 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             <div className="bg-white border border-gray-100 p-8 rounded-[2rem] shadow-sm mb-12 flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all duration-500">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                     <div className="flex flex-col items-center md:items-start">
-                        <div className="text-5xl font-black text-gray-900 tracking-tighter leading-none mb-2">{avg}</div>
-                        <div className="flex text-yellow-400 gap-0.5 mb-1">
+                        <div className="text-5xl font-black tracking-tighter leading-none mb-2" style={{ color: nameColor }}>{avg}</div>
+                        <div className="flex text-yellow-400 gap-0.5 mb-1" style={{ color: starColor }}>
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <span key={i} className={i < Math.round(Number(avg)) ? "text-yellow-400" : "text-gray-200"}>★</span>
+                                <span key={i} className={i < Math.round(Number(avg)) ? "" : "text-gray-200"}>★</span>
                             ))}
                         </div>
-                        <div className="text-[10px] font-black text-gray-600 uppercase tracking-widest leading-none">Overall Sentiment</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest leading-none" style={{ color: reviewTextColor }}>Overall Sentiment</div>
                     </div>
                     <div className="hidden md:block w-px h-16 bg-gray-100/80"></div>
                     <div>
-                        <h3 className="text-xl font-black text-gray-900 tracking-tight text-center md:text-left">Verified Customer Feedback</h3>
-                        <p className="text-xs font-bold text-gray-600 uppercase tracking-widest text-center md:text-left mt-1">Based on {reviews.length} independent reviews</p>
+                        <h3 className="text-xl font-black tracking-tight text-center md:text-left" style={{ color: nameColor }}>Verified Customer Feedback</h3>
+                        <p className="text-xs font-bold uppercase tracking-widest text-center md:text-left mt-1" style={{ color: reviewTextColor }}>Based on {reviews.length} independent reviews</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     {layoutType === 'CAROUSEL' && (
                         <div className="flex gap-2">
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-gray-900">←</button>
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-gray-900">→</button>
+                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-blue-600">←</button>
+                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-blue-600">→</button>
                         </div>
                     )}
                     {showBadge && (
@@ -316,7 +322,7 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
 }
 
 function ReviewCard({ review, config, className = "" }: any) {
-    const { primaryColor, secondaryColor, cornerRadius } = config;
+    const { primaryColor, secondaryColor, starColor, reviewTextColor, nameColor, cornerRadius } = config;
     return (
         <div
             className={`p-6 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-700 ${cornerRadius} ${className}`}
@@ -331,7 +337,7 @@ function ReviewCard({ review, config, className = "" }: any) {
                         {review.reviewer[0]}
                     </div>
                     <div>
-                        <div className="font-extrabold text-gray-900 text-sm leading-none mb-1">{review.reviewer}</div>
+                        <div className="font-extrabold text-sm leading-none mb-1" style={{ color: nameColor }}>{review.reviewer}</div>
                         <div className="flex items-center gap-1">
                             <div className="w-3 h-3 rounded-full bg-blue-500 flex items-center justify-center">
                                 <div className="w-[5px] h-[5px] bg-white rounded-full"></div>
@@ -340,14 +346,14 @@ function ReviewCard({ review, config, className = "" }: any) {
                         </div>
                     </div>
                 </div>
-                <div className="flex text-yellow-400 text-[10px]">
+                <div className="flex text-[10px]" style={{ color: starColor }}>
                     {Array.from({ length: 5 }).map((_, idx) => (
-                        <span key={idx} className={idx < review.rating ? "text-yellow-400" : "text-gray-100"}>★</span>
+                        <span key={idx} className={idx < review.rating ? "" : "text-gray-100"}>★</span>
                     ))}
                 </div>
             </div>
 
-            <p className="text-slate-700 italic text-sm font-medium leading-relaxed flex-1">
+            <p className="italic text-sm font-medium leading-relaxed flex-1" style={{ color: reviewTextColor }}>
                 "{review.text}"
             </p>
 
@@ -361,7 +367,7 @@ function ReviewCard({ review, config, className = "" }: any) {
 
 
 function ImageTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, cornerRadius, showBadge } = config;
+    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
     const reviewsWithImages = [
         { id: 1, name: "Maria Lopez", rating: 5, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
         { id: 2, name: "Jonathan Doe", rating: 4, image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600", text: "Great quality ingredients. You can tell they care about nutrition." },
@@ -377,9 +383,9 @@ function ImageTemplate({ reviews, config, fontClass }: any) {
                             <ImageWithFallback src={review.image} alt="Customer photo" className="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1" />
 
                             {/* Rating badge overlay */}
-                            <div className="absolute top-4 left-4 flex gap-1">
+                            <div className="absolute top-4 left-4 flex gap-1" style={{ color: starColor }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={`text-sm ${i < review.rating ? "text-yellow-400" : "text-white/30"}`}>★</span>
+                                    <span key={i} className={`text-sm ${i < review.rating ? "" : "text-white/30"}`}>★</span>
                                 ))}
                             </div>
 
@@ -394,14 +400,14 @@ function ImageTemplate({ reviews, config, fontClass }: any) {
 
                             {/* Gradient bottom overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                <p className="text-white text-sm font-medium leading-relaxed mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <p className="text-white text-sm font-medium leading-relaxed mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ color: reviewTextColor }}>
                                     "{review.text}"
                                 </p>
                                 <div className="flex items-center gap-3 border-t border-white/20 pt-4">
                                     <div className="w-8 h-8 rounded-full border-2 border-white/30 flex items-center justify-center text-[10px] font-black text-white bg-white/10">
                                         {review.name[0]}
                                     </div>
-                                    <span className="text-white text-xs font-black uppercase tracking-widest">{review.name}</span>
+                                    <span className="text-white text-xs font-black uppercase tracking-widest" style={{ color: nameColor }}>{review.name}</span>
                                 </div>
                             </div>
                         </div>
@@ -413,7 +419,7 @@ function ImageTemplate({ reviews, config, fontClass }: any) {
 }
 
 function AIGenTemplate({ campaignId, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, cornerRadius, showBadge } = config;
+    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [generatedReview, setGeneratedReview] = useState<any>(null);
     const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
@@ -449,7 +455,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                         <span className="group-hover:scale-125 transition-transform">🤖</span>
                     </div>
 
-                    <h3 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">AI Insights Engine</h3>
+                    <h3 className="text-3xl font-black mb-4 tracking-tight" style={{ color: nameColor }}>AI Insights Engine</h3>
                     <p className="text-gray-700 mb-10 max-w-sm mx-auto leading-relaxed font-medium">
                         Transform your raw persona data into authentic, verified reviews using our proprietary sampling-trained AI models.
                     </p>
@@ -474,21 +480,21 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                                 <span>✨ AI Transformation</span>
                             </div>
                             <div className="flex items-center gap-4">
-                                <div className="flex text-yellow-400 text-2xl gap-0.5">
+                                <div className="flex text-2xl gap-0.5" style={{ color: starColor }}>
                                     {Array.from({ length: 5 }).map((_, i) => (
-                                        <span key={i} className={i < generatedReview.rating ? "text-yellow-400" : "text-gray-200"}>★</span>
+                                        <span key={i} className={i < generatedReview.rating ? "" : "text-gray-200"}>★</span>
                                     ))}
                                 </div>
-                                <span className="font-black text-gray-900 text-xl">{generatedReview.rating}.0</span>
+                                <span className="font-black text-xl" style={{ color: nameColor }}>{generatedReview.rating}.0</span>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none mb-1">Generated Based On</div>
-                            <div className="text-xs font-bold text-slate-800">{personas.find((p: any) => p.id === selectedPersona)?.label}</div>
+                            <div className="text-[10px] font-black uppercase tracking-widest leading-none mb-1" style={{ color: reviewTextColor }}>Generated Based On</div>
+                            <div className="text-xs font-bold" style={{ color: nameColor }}>{personas.find((p: any) => p.id === selectedPersona)?.label}</div>
                         </div>
                     </div>
 
-                    <p className="text-gray-900 text-2xl leading-relaxed mb-10 font-bold tracking-tight italic">
+                    <p className="text-2xl leading-relaxed mb-10 font-bold tracking-tight italic" style={{ color: reviewTextColor }}>
                         "{generatedReview.text}"
                     </p>
 
@@ -499,8 +505,8 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                                 <span className="relative z-10 font-black">AI</span>
                             </div>
                             <div>
-                                <div className="font-black text-gray-900 text-lg leading-none mb-1">{generatedReview.reviewer}</div>
-                                <div className="text-xs font-bold text-slate-600 uppercase tracking-widest">Verified Sampling Recipient</div>
+                                <div className="font-black text-lg leading-none mb-1" style={{ color: nameColor }}>{generatedReview.reviewer}</div>
+                                <div className="text-xs font-bold uppercase tracking-widest" style={{ color: reviewTextColor }}>Verified Sampling Recipient</div>
                             </div>
                         </div>
                         {showBadge && (
@@ -526,7 +532,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                     <div className="bg-white rounded-[40px] shadow-3xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col border border-white/20">
                         <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-slate-50/50">
                             <div>
-                                <h3 className="text-2xl font-black text-gray-900 tracking-tight">Select Intelligence Data</h3>
+                                <h3 className="text-2xl font-black tracking-tight" style={{ color: nameColor }}>Select Intelligence Data</h3>
                                 <p className="text-sm font-medium text-slate-600 border-b border-blue-100 inline-block pb-0.5">Choose a persona to fuel the AI model</p>
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm">✕</button>
@@ -542,7 +548,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🎯</div>
                                         <div className="text-left">
-                                            <div className="font-black text-slate-900">{persona.label}</div>
+                                            <div className="font-black" style={{ color: nameColor }}>{persona.label}</div>
                                             <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{persona.count.toLocaleString()} Recipients</div>
                                         </div>
                                     </div>

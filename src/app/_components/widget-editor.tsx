@@ -15,6 +15,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     // State for visual customization
     const [primaryColor, setPrimaryColor] = useState(initialWidget.settings?.primaryColor || "#2563EB");
     const [secondaryColor, setSecondaryColor] = useState(initialWidget.settings?.secondaryColor || "#FFFFFF");
+    const [starColor, setStarColor] = useState(initialWidget.settings?.starColor || "#FBBF24");
+    const [reviewTextColor, setReviewTextColor] = useState(initialWidget.settings?.reviewTextColor || "#334155");
+    const [nameColor, setNameColor] = useState(initialWidget.settings?.nameColor || "#0F172A");
     const [fontStyle, setFontStyle] = useState(initialWidget.settings?.fontStyle || "sans");
     const [showBadge, setShowBadge] = useState(initialWidget.settings?.showBadge ?? true);
 
@@ -37,6 +40,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         setHasChanges(true);
         if (key === 'primaryColor') setPrimaryColor(value);
         if (key === 'secondaryColor') setSecondaryColor(value);
+        if (key === 'starColor') setStarColor(value);
+        if (key === 'reviewTextColor') setReviewTextColor(value);
+        if (key === 'nameColor') setNameColor(value);
         if (key === 'fontStyle') setFontStyle(value);
         if (key === 'showBadge') setShowBadge(value);
         if (key === 'template') setTemplate(value);
@@ -56,6 +62,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
             settings: {
                 primaryColor,
                 secondaryColor,
+                starColor,
+                reviewTextColor,
+                nameColor,
                 fontStyle,
                 showBadge,
                 cornerRadius,
@@ -100,7 +109,6 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 </div>
 
                 <div className="flex items-center gap-2 md:gap-4">
-                    {/* Mobile Preview Toggle */}
                     <button
                         onClick={() => setIsPreviewVisible(!isPreviewVisible)}
                         className={`lg:hidden px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isPreviewVisible ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 text-slate-600'
@@ -144,10 +152,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
             </header>
 
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
-                {/* Left Sidebar - Customization */}
-                <aside className={`w-full md:w-[320px] lg:w-[400px] bg-white border-r border-slate-200 flex flex-col z-20 shadow-xl transition-all duration-300 ${isPreviewVisible ? '-translate-x-full md:translate-x-0 hidden md:flex' : 'translate-x-0 flex'
-                    }`}>
-                    {/* Tab Navigation */}
+                <aside className={`w-full md:w-[320px] lg:w-[400px] bg-white border-r border-slate-200 flex flex-col z-20 shadow-xl transition-all duration-300 ${isPreviewVisible ? '-translate-x-full md:translate-x-0 hidden md:flex' : 'translate-x-0 flex'}`}>
                     <div className="flex p-2 gap-1 bg-slate-50 border-b border-slate-200 shrink-0">
                         {["Layout", "Style", "Settings"].map((tab) => (
                             <button
@@ -183,7 +188,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                     : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
                                                     }`}
                                             >
-                                                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-xl shrink-0 transition-transform group-hover:scale-110">
+                                                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-xl shrink-0">
                                                     {type.icon}
                                                 </div>
                                                 <div className="flex-1">
@@ -197,10 +202,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
                                 {template === 'GOOGLE' && (
                                     <div className="space-y-6 pt-8 border-t border-slate-200 mt-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Configure Layout</h2>
-                                        </div>
-
+                                        <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Configure Layout</h2>
                                         <div className="flex p-1.5 bg-slate-100 rounded-2xl gap-1">
                                             {[
                                                 { id: 'GRID', name: 'Grid View', icon: '🪟' },
@@ -224,23 +226,23 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         {layoutType === 'GRID' && (
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Grid Columns</label>
+                                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Columns</label>
                                                     <select
                                                         value={gridCols}
                                                         onChange={(e) => handleUpdate('gridCols', parseInt(e.target.value))}
-                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20"
                                                     >
-                                                        {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n} Columns</option>)}
+                                                        {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n}</option>)}
                                                     </select>
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Visible Rows</label>
+                                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Rows</label>
                                                     <select
                                                         value={gridRows}
                                                         onChange={(e) => handleUpdate('gridRows', parseInt(e.target.value))}
-                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20"
                                                     >
-                                                        {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n} Rows</option>)}
+                                                        {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
                                                     </select>
                                                 </div>
                                             </div>
@@ -253,14 +255,14 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                             </div>
                                             <button
                                                 onClick={() => handleUpdate('infiniteScroll', !infiniteScroll)}
-                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${infiniteScroll ? 'bg-blue-600 shadow-lg shadow-blue-500/20' : 'bg-slate-300'}`}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${infiniteScroll ? 'bg-blue-600' : 'bg-slate-300'}`}
                                             >
-                                                <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition duration-200 ease-in-out ${infiniteScroll ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                                                <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition ${infiniteScroll ? 'translate-x-6' : 'translate-x-0.5'}`} />
                                             </button>
                                         </div>
 
                                         {infiniteScroll && (
-                                            <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <div className="space-y-4 pt-2">
                                                 <div className="flex items-center justify-between p-5 bg-blue-50/30 border border-blue-100/50 rounded-3xl">
                                                     <div>
                                                         <h3 className="text-[13px] font-bold text-blue-900">Cinematic Motion</h3>
@@ -268,31 +270,24 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                     </div>
                                                     <button
                                                         onClick={() => handleUpdate('autoScroll', !autoScroll)}
-                                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${autoScroll ? 'bg-blue-600 shadow-lg shadow-blue-500/20' : 'bg-slate-300'}`}
+                                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${autoScroll ? 'bg-blue-600' : 'bg-slate-300'}`}
                                                     >
-                                                        <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition duration-200 ease-in-out ${autoScroll ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                                                        <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition ${autoScroll ? 'translate-x-6' : 'translate-x-0.5'}`} />
                                                     </button>
                                                 </div>
 
                                                 {autoScroll && (
                                                     <div className="space-y-5 p-5 bg-slate-50 border border-slate-100 rounded-3xl shadow-sm">
                                                         <div className="flex justify-between items-center mb-1">
-                                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Scroll Duration</label>
+                                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Scroll Speed</label>
                                                             <span className="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">{animationSpeed}s</span>
                                                         </div>
                                                         <input
-                                                            type="range"
-                                                            min="5"
-                                                            max="60"
-                                                            step="5"
+                                                            type="range" min="5" max="60" step="5"
                                                             value={animationSpeed}
                                                             onChange={(e) => handleUpdate('animationSpeed', parseInt(e.target.value))}
                                                             className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                         />
-                                                        <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase">
-                                                            <span>High Speed</span>
-                                                            <span>Cinematic</span>
-                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
@@ -333,6 +328,54 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                     />
                                                 </div>
                                                 <span className="text-xs font-mono font-bold text-slate-900">{secondaryColor}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6 pt-10 border-t border-slate-100">
+                                    <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Detail Colors</h2>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="p-5 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow group">
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-4 block">Star Color</label>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl border-2 border-white shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform ring-1 ring-slate-100">
+                                                    <input
+                                                        type="color"
+                                                        value={starColor}
+                                                        onChange={(e) => handleUpdate('starColor', e.target.value)}
+                                                        className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer scale-150"
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-mono font-bold text-slate-900">{starColor}</span>
+                                            </div>
+                                        </div>
+                                        <div className="p-5 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow group">
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-4 block">Name Color</label>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl border-2 border-white shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform ring-1 ring-slate-100">
+                                                    <input
+                                                        type="color"
+                                                        value={nameColor}
+                                                        onChange={(e) => handleUpdate('nameColor', e.target.value)}
+                                                        className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer scale-150"
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-mono font-bold text-slate-900">{nameColor}</span>
+                                            </div>
+                                        </div>
+                                        <div className="p-5 bg-white border border-slate-100 rounded-[2rem] shadow-sm hover:shadow-md transition-shadow group col-span-2">
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-4 block">Review Text Color</label>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-2xl border-2 border-white shadow-lg relative overflow-hidden group-hover:scale-105 transition-transform ring-1 ring-slate-100">
+                                                    <input
+                                                        type="color"
+                                                        value={reviewTextColor}
+                                                        onChange={(e) => handleUpdate('reviewTextColor', e.target.value)}
+                                                        className="absolute inset-0 w-[200%] h-[200%] -translate-x-1/4 -translate-y-1/4 cursor-pointer scale-150"
+                                                    />
+                                                </div>
+                                                <span className="text-xs font-mono font-bold text-slate-900">{reviewTextColor}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -413,10 +456,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                     </div>
                 </aside>
 
-                {/* Preview Area */}
-                <main className={`flex-1 overflow-hidden relative bg-slate-100/30 flex flex-col transition-all duration-300 ${isPreviewVisible ? 'flex translate-x-0' : 'hidden md:flex'
-                    }`}>
-                    {/* Background patterns */}
+                <main className={`flex-1 overflow-hidden relative bg-slate-100/30 flex flex-col transition-all duration-300 ${isPreviewVisible ? 'flex translate-x-0' : 'hidden md:flex'}`}>
                     <div className="absolute inset-0 opacity-[0.4] pointer-events-none overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-full" style={{ backgroundImage: 'radial-gradient(#CBD5E1 0.5px, transparent 0.5px)', backgroundSize: '32px 32px' }}></div>
                     </div>
@@ -430,6 +470,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                     config={{
                                         primaryColor,
                                         secondaryColor,
+                                        starColor,
+                                        reviewTextColor,
+                                        nameColor,
                                         fontStyle,
                                         showBadge,
                                         cornerRadius,
