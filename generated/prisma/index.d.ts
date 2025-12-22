@@ -1498,15 +1498,15 @@ export namespace Prisma {
    */
 
   export type CampaignCountOutputType = {
-    widgets: number
     personas: number
     reviews: number
+    widgets: number
   }
 
   export type CampaignCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    widgets?: boolean | CampaignCountOutputTypeCountWidgetsArgs
     personas?: boolean | CampaignCountOutputTypeCountPersonasArgs
     reviews?: boolean | CampaignCountOutputTypeCountReviewsArgs
+    widgets?: boolean | CampaignCountOutputTypeCountWidgetsArgs
   }
 
   // Custom InputTypes
@@ -1523,13 +1523,6 @@ export namespace Prisma {
   /**
    * CampaignCountOutputType without action
    */
-  export type CampaignCountOutputTypeCountWidgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: WidgetWhereInput
-  }
-
-  /**
-   * CampaignCountOutputType without action
-   */
   export type CampaignCountOutputTypeCountPersonasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PersonaWhereInput
   }
@@ -1539,6 +1532,13 @@ export namespace Prisma {
    */
   export type CampaignCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReviewWhereInput
+  }
+
+  /**
+   * CampaignCountOutputType without action
+   */
+  export type CampaignCountOutputTypeCountWidgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WidgetWhereInput
   }
 
 
@@ -1579,14 +1579,14 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     accounts: number
-    sessions: number
     campaigns: number
+    sessions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     campaigns?: boolean | UserCountOutputTypeCountCampaignsArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   }
 
   // Custom InputTypes
@@ -1610,15 +1610,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
+  export type UserCountOutputTypeCountCampaignsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CampaignWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountCampaignsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CampaignWhereInput
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
   }
 
 
@@ -1806,10 +1806,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdById?: boolean
-    widgets?: boolean | Campaign$widgetsArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     personas?: boolean | Campaign$personasArgs<ExtArgs>
     reviews?: boolean | Campaign$reviewsArgs<ExtArgs>
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    widgets?: boolean | Campaign$widgetsArgs<ExtArgs>
     _count?: boolean | CampaignCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["campaign"]>
 
@@ -1847,10 +1847,10 @@ export namespace Prisma {
 
   export type CampaignOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "brand" | "status" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["campaign"]>
   export type CampaignInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    widgets?: boolean | Campaign$widgetsArgs<ExtArgs>
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
     personas?: boolean | Campaign$personasArgs<ExtArgs>
     reviews?: boolean | Campaign$reviewsArgs<ExtArgs>
-    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    widgets?: boolean | Campaign$widgetsArgs<ExtArgs>
     _count?: boolean | CampaignCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CampaignIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1863,10 +1863,10 @@ export namespace Prisma {
   export type $CampaignPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Campaign"
     objects: {
-      widgets: Prisma.$WidgetPayload<ExtArgs>[]
+      createdBy: Prisma.$UserPayload<ExtArgs>
       personas: Prisma.$PersonaPayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
-      createdBy: Prisma.$UserPayload<ExtArgs>
+      widgets: Prisma.$WidgetPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2270,10 +2270,10 @@ export namespace Prisma {
    */
   export interface Prisma__CampaignClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    widgets<T extends Campaign$widgetsArgs<ExtArgs> = {}>(args?: Subset<T, Campaign$widgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WidgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     personas<T extends Campaign$personasArgs<ExtArgs> = {}>(args?: Subset<T, Campaign$personasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PersonaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends Campaign$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Campaign$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    widgets<T extends Campaign$widgetsArgs<ExtArgs> = {}>(args?: Subset<T, Campaign$widgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WidgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2706,30 +2706,6 @@ export namespace Prisma {
   }
 
   /**
-   * Campaign.widgets
-   */
-  export type Campaign$widgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Widget
-     */
-    select?: WidgetSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Widget
-     */
-    omit?: WidgetOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WidgetInclude<ExtArgs> | null
-    where?: WidgetWhereInput
-    orderBy?: WidgetOrderByWithRelationInput | WidgetOrderByWithRelationInput[]
-    cursor?: WidgetWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: WidgetScalarFieldEnum | WidgetScalarFieldEnum[]
-  }
-
-  /**
    * Campaign.personas
    */
   export type Campaign$personasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2775,6 +2751,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReviewScalarFieldEnum | ReviewScalarFieldEnum[]
+  }
+
+  /**
+   * Campaign.widgets
+   */
+  export type Campaign$widgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Widget
+     */
+    select?: WidgetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Widget
+     */
+    omit?: WidgetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WidgetInclude<ExtArgs> | null
+    where?: WidgetWhereInput
+    orderBy?: WidgetOrderByWithRelationInput | WidgetOrderByWithRelationInput[]
+    cursor?: WidgetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WidgetScalarFieldEnum | WidgetScalarFieldEnum[]
   }
 
   /**
@@ -8635,8 +8635,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     campaigns?: boolean | User$campaignsArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -8667,8 +8667,8 @@ export namespace Prisma {
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
     campaigns?: boolean | User$campaignsArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8678,8 +8678,8 @@ export namespace Prisma {
     name: "User"
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
       campaigns: Prisma.$CampaignPayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9082,8 +9082,8 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     campaigns<T extends User$campaignsArgs<ExtArgs> = {}>(args?: Subset<T, User$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9530,30 +9530,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
-   */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
    * User.campaigns
    */
   export type User$campaignsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9575,6 +9551,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CampaignScalarFieldEnum | CampaignScalarFieldEnum[]
+  }
+
+  /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
   }
 
   /**
@@ -10821,10 +10821,10 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeFilter<"Campaign"> | Date | string
     createdById?: StringFilter<"Campaign"> | string
-    widgets?: WidgetListRelationFilter
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     personas?: PersonaListRelationFilter
     reviews?: ReviewListRelationFilter
-    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    widgets?: WidgetListRelationFilter
   }
 
   export type CampaignOrderByWithRelationInput = {
@@ -10835,10 +10835,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     createdById?: SortOrder
-    widgets?: WidgetOrderByRelationAggregateInput
+    createdBy?: UserOrderByWithRelationInput
     personas?: PersonaOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
-    createdBy?: UserOrderByWithRelationInput
+    widgets?: WidgetOrderByRelationAggregateInput
   }
 
   export type CampaignWhereUniqueInput = Prisma.AtLeast<{
@@ -10852,10 +10852,10 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Campaign"> | Date | string
     updatedAt?: DateTimeFilter<"Campaign"> | Date | string
     createdById?: StringFilter<"Campaign"> | string
-    widgets?: WidgetListRelationFilter
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     personas?: PersonaListRelationFilter
     reviews?: ReviewListRelationFilter
-    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    widgets?: WidgetListRelationFilter
   }, "id">
 
   export type CampaignOrderByWithAggregationInput = {
@@ -11267,8 +11267,8 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     campaigns?: CampaignListRelationFilter
+    sessions?: SessionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -11278,8 +11278,8 @@ export namespace Prisma {
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
-    sessions?: SessionOrderByRelationAggregateInput
     campaigns?: CampaignOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -11292,8 +11292,8 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
     campaigns?: CampaignListRelationFilter
+    sessions?: SessionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -11368,10 +11368,10 @@ export namespace Prisma {
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    widgets?: WidgetCreateNestedManyWithoutCampaignInput
+    createdBy: UserCreateNestedOneWithoutCampaignsInput
     personas?: PersonaCreateNestedManyWithoutCampaignInput
     reviews?: ReviewCreateNestedManyWithoutCampaignInput
-    createdBy: UserCreateNestedOneWithoutCampaignsInput
+    widgets?: WidgetCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignUncheckedCreateInput = {
@@ -11382,9 +11382,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
-    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
     personas?: PersonaUncheckedCreateNestedManyWithoutCampaignInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignUpdateInput = {
@@ -11394,10 +11394,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
     personas?: PersonaUpdateManyWithoutCampaignNestedInput
     reviews?: ReviewUpdateManyWithoutCampaignNestedInput
-    createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
+    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
   }
 
   export type CampaignUncheckedUpdateInput = {
@@ -11408,9 +11408,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
-    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
     personas?: PersonaUncheckedUpdateManyWithoutCampaignNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
   }
 
   export type CampaignCreateManyInput = {
@@ -11846,8 +11846,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
     campaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11857,8 +11857,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     campaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11868,8 +11868,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     campaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11879,8 +11879,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     campaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11975,10 +11975,9 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type WidgetListRelationFilter = {
-    every?: WidgetWhereInput
-    some?: WidgetWhereInput
-    none?: WidgetWhereInput
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
   }
 
   export type PersonaListRelationFilter = {
@@ -11993,13 +11992,10 @@ export namespace Prisma {
     none?: ReviewWhereInput
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
-  export type WidgetOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type WidgetListRelationFilter = {
+    every?: WidgetWhereInput
+    some?: WidgetWhereInput
+    none?: WidgetWhereInput
   }
 
   export type PersonaOrderByRelationAggregateInput = {
@@ -12007,6 +12003,10 @@ export namespace Prisma {
   }
 
   export type ReviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type WidgetOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12455,27 +12455,27 @@ export namespace Prisma {
     none?: AccountWhereInput
   }
 
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
-  }
-
   export type CampaignListRelationFilter = {
     every?: CampaignWhereInput
     some?: CampaignWhereInput
     none?: CampaignWhereInput
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type SessionOrderByRelationAggregateInput = {
+  export type CampaignOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type CampaignOrderByRelationAggregateInput = {
+  export type SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12540,11 +12540,10 @@ export namespace Prisma {
     expires?: SortOrder
   }
 
-  export type WidgetCreateNestedManyWithoutCampaignInput = {
-    create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
-    connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
-    createMany?: WidgetCreateManyCampaignInputEnvelope
-    connect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+  export type UserCreateNestedOneWithoutCampaignsInput = {
+    create?: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCampaignsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type PersonaCreateNestedManyWithoutCampaignInput = {
@@ -12561,13 +12560,7 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type UserCreateNestedOneWithoutCampaignsInput = {
-    create?: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCampaignsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type WidgetUncheckedCreateNestedManyWithoutCampaignInput = {
+  export type WidgetCreateNestedManyWithoutCampaignInput = {
     create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
     connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
     createMany?: WidgetCreateManyCampaignInputEnvelope
@@ -12588,6 +12581,13 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
+  export type WidgetUncheckedCreateNestedManyWithoutCampaignInput = {
+    create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
+    createMany?: WidgetCreateManyCampaignInputEnvelope
+    connect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -12596,18 +12596,12 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type WidgetUpdateManyWithoutCampaignNestedInput = {
-    create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
-    connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
-    upsert?: WidgetUpsertWithWhereUniqueWithoutCampaignInput | WidgetUpsertWithWhereUniqueWithoutCampaignInput[]
-    createMany?: WidgetCreateManyCampaignInputEnvelope
-    set?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
-    disconnect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
-    delete?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
-    connect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
-    update?: WidgetUpdateWithWhereUniqueWithoutCampaignInput | WidgetUpdateWithWhereUniqueWithoutCampaignInput[]
-    updateMany?: WidgetUpdateManyWithWhereWithoutCampaignInput | WidgetUpdateManyWithWhereWithoutCampaignInput[]
-    deleteMany?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
+  export type UserUpdateOneRequiredWithoutCampaignsNestedInput = {
+    create?: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCampaignsInput
+    upsert?: UserUpsertWithoutCampaignsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCampaignsInput, UserUpdateWithoutCampaignsInput>, UserUncheckedUpdateWithoutCampaignsInput>
   }
 
   export type PersonaUpdateManyWithoutCampaignNestedInput = {
@@ -12638,15 +12632,7 @@ export namespace Prisma {
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
   }
 
-  export type UserUpdateOneRequiredWithoutCampaignsNestedInput = {
-    create?: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCampaignsInput
-    upsert?: UserUpsertWithoutCampaignsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCampaignsInput, UserUpdateWithoutCampaignsInput>, UserUncheckedUpdateWithoutCampaignsInput>
-  }
-
-  export type WidgetUncheckedUpdateManyWithoutCampaignNestedInput = {
+  export type WidgetUpdateManyWithoutCampaignNestedInput = {
     create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
     connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
     upsert?: WidgetUpsertWithWhereUniqueWithoutCampaignInput | WidgetUpsertWithWhereUniqueWithoutCampaignInput[]
@@ -12686,6 +12672,20 @@ export namespace Prisma {
     update?: ReviewUpdateWithWhereUniqueWithoutCampaignInput | ReviewUpdateWithWhereUniqueWithoutCampaignInput[]
     updateMany?: ReviewUpdateManyWithWhereWithoutCampaignInput | ReviewUpdateManyWithWhereWithoutCampaignInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type WidgetUncheckedUpdateManyWithoutCampaignNestedInput = {
+    create?: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput> | WidgetCreateWithoutCampaignInput[] | WidgetUncheckedCreateWithoutCampaignInput[]
+    connectOrCreate?: WidgetCreateOrConnectWithoutCampaignInput | WidgetCreateOrConnectWithoutCampaignInput[]
+    upsert?: WidgetUpsertWithWhereUniqueWithoutCampaignInput | WidgetUpsertWithWhereUniqueWithoutCampaignInput[]
+    createMany?: WidgetCreateManyCampaignInputEnvelope
+    set?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+    disconnect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+    delete?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+    connect?: WidgetWhereUniqueInput | WidgetWhereUniqueInput[]
+    update?: WidgetUpdateWithWhereUniqueWithoutCampaignInput | WidgetUpdateWithWhereUniqueWithoutCampaignInput[]
+    updateMany?: WidgetUpdateManyWithWhereWithoutCampaignInput | WidgetUpdateManyWithWhereWithoutCampaignInput[]
+    deleteMany?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
   }
 
   export type CampaignCreateNestedOneWithoutWidgetsInput = {
@@ -12847,18 +12847,18 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
   export type CampaignCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput> | CampaignCreateWithoutCreatedByInput[] | CampaignUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: CampaignCreateOrConnectWithoutCreatedByInput | CampaignCreateOrConnectWithoutCreatedByInput[]
     createMany?: CampaignCreateManyCreatedByInputEnvelope
     connect?: CampaignWhereUniqueInput | CampaignWhereUniqueInput[]
+  }
+
+  export type SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -12868,18 +12868,18 @@ export namespace Prisma {
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
   export type CampaignUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput> | CampaignCreateWithoutCreatedByInput[] | CampaignUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: CampaignCreateOrConnectWithoutCreatedByInput | CampaignCreateOrConnectWithoutCreatedByInput[]
     createMany?: CampaignCreateManyCreatedByInputEnvelope
     connect?: CampaignWhereUniqueInput | CampaignWhereUniqueInput[]
+  }
+
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -12900,20 +12900,6 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type SessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type CampaignUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput> | CampaignCreateWithoutCreatedByInput[] | CampaignUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: CampaignCreateOrConnectWithoutCreatedByInput | CampaignCreateOrConnectWithoutCreatedByInput[]
@@ -12926,6 +12912,20 @@ export namespace Prisma {
     update?: CampaignUpdateWithWhereUniqueWithoutCreatedByInput | CampaignUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: CampaignUpdateManyWithWhereWithoutCreatedByInput | CampaignUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: CampaignScalarWhereInput | CampaignScalarWhereInput[]
+  }
+
+  export type SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
@@ -12942,20 +12942,6 @@ export namespace Prisma {
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
   export type CampaignUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput> | CampaignCreateWithoutCreatedByInput[] | CampaignUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: CampaignCreateOrConnectWithoutCreatedByInput | CampaignCreateOrConnectWithoutCreatedByInput[]
@@ -12968,6 +12954,20 @@ export namespace Prisma {
     update?: CampaignUpdateWithWhereUniqueWithoutCreatedByInput | CampaignUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: CampaignUpdateManyWithWhereWithoutCreatedByInput | CampaignUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: CampaignScalarWhereInput | CampaignScalarWhereInput[]
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13194,32 +13194,29 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type WidgetCreateWithoutCampaignInput = {
+  export type UserCreateWithoutCampaignsInput = {
     id?: string
-    name: string
-    template: string
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
-  export type WidgetUncheckedCreateWithoutCampaignInput = {
+  export type UserUncheckedCreateWithoutCampaignsInput = {
     id?: string
-    name: string
-    template: string
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type WidgetCreateOrConnectWithoutCampaignInput = {
-    where: WidgetWhereUniqueInput
-    create: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput>
-  }
-
-  export type WidgetCreateManyCampaignInputEnvelope = {
-    data: WidgetCreateManyCampaignInput | WidgetCreateManyCampaignInput[]
-    skipDuplicates?: boolean
+  export type UserCreateOrConnectWithoutCampaignsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
   }
 
   export type PersonaCreateWithoutCampaignInput = {
@@ -13288,58 +13285,63 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCreateWithoutCampaignsInput = {
+  export type WidgetCreateWithoutCampaignInput = {
     id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
+    name: string
+    template: string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type UserUncheckedCreateWithoutCampaignsInput = {
+  export type WidgetUncheckedCreateWithoutCampaignInput = {
     id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    name: string
+    template: string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type UserCreateOrConnectWithoutCampaignsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
-  }
-
-  export type WidgetUpsertWithWhereUniqueWithoutCampaignInput = {
+  export type WidgetCreateOrConnectWithoutCampaignInput = {
     where: WidgetWhereUniqueInput
-    update: XOR<WidgetUpdateWithoutCampaignInput, WidgetUncheckedUpdateWithoutCampaignInput>
     create: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput>
   }
 
-  export type WidgetUpdateWithWhereUniqueWithoutCampaignInput = {
-    where: WidgetWhereUniqueInput
-    data: XOR<WidgetUpdateWithoutCampaignInput, WidgetUncheckedUpdateWithoutCampaignInput>
+  export type WidgetCreateManyCampaignInputEnvelope = {
+    data: WidgetCreateManyCampaignInput | WidgetCreateManyCampaignInput[]
+    skipDuplicates?: boolean
   }
 
-  export type WidgetUpdateManyWithWhereWithoutCampaignInput = {
-    where: WidgetScalarWhereInput
-    data: XOR<WidgetUpdateManyMutationInput, WidgetUncheckedUpdateManyWithoutCampaignInput>
+  export type UserUpsertWithoutCampaignsInput = {
+    update: XOR<UserUpdateWithoutCampaignsInput, UserUncheckedUpdateWithoutCampaignsInput>
+    create: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
+    where?: UserWhereInput
   }
 
-  export type WidgetScalarWhereInput = {
-    AND?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
-    OR?: WidgetScalarWhereInput[]
-    NOT?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
-    id?: StringFilter<"Widget"> | string
-    name?: StringFilter<"Widget"> | string
-    template?: StringFilter<"Widget"> | string
-    settings?: JsonNullableFilter<"Widget">
-    createdAt?: DateTimeFilter<"Widget"> | Date | string
-    updatedAt?: DateTimeFilter<"Widget"> | Date | string
-    campaignId?: StringFilter<"Widget"> | string
+  export type UserUpdateToOneWithWhereWithoutCampaignsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCampaignsInput, UserUncheckedUpdateWithoutCampaignsInput>
+  }
+
+  export type UserUpdateWithoutCampaignsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCampaignsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PersonaUpsertWithWhereUniqueWithoutCampaignInput = {
@@ -13404,35 +13406,33 @@ export namespace Prisma {
     personaId?: StringNullableFilter<"Review"> | string | null
   }
 
-  export type UserUpsertWithoutCampaignsInput = {
-    update: XOR<UserUpdateWithoutCampaignsInput, UserUncheckedUpdateWithoutCampaignsInput>
-    create: XOR<UserCreateWithoutCampaignsInput, UserUncheckedCreateWithoutCampaignsInput>
-    where?: UserWhereInput
+  export type WidgetUpsertWithWhereUniqueWithoutCampaignInput = {
+    where: WidgetWhereUniqueInput
+    update: XOR<WidgetUpdateWithoutCampaignInput, WidgetUncheckedUpdateWithoutCampaignInput>
+    create: XOR<WidgetCreateWithoutCampaignInput, WidgetUncheckedCreateWithoutCampaignInput>
   }
 
-  export type UserUpdateToOneWithWhereWithoutCampaignsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCampaignsInput, UserUncheckedUpdateWithoutCampaignsInput>
+  export type WidgetUpdateWithWhereUniqueWithoutCampaignInput = {
+    where: WidgetWhereUniqueInput
+    data: XOR<WidgetUpdateWithoutCampaignInput, WidgetUncheckedUpdateWithoutCampaignInput>
   }
 
-  export type UserUpdateWithoutCampaignsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
+  export type WidgetUpdateManyWithWhereWithoutCampaignInput = {
+    where: WidgetScalarWhereInput
+    data: XOR<WidgetUpdateManyMutationInput, WidgetUncheckedUpdateManyWithoutCampaignInput>
   }
 
-  export type UserUncheckedUpdateWithoutCampaignsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  export type WidgetScalarWhereInput = {
+    AND?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
+    OR?: WidgetScalarWhereInput[]
+    NOT?: WidgetScalarWhereInput | WidgetScalarWhereInput[]
+    id?: StringFilter<"Widget"> | string
+    name?: StringFilter<"Widget"> | string
+    template?: StringFilter<"Widget"> | string
+    settings?: JsonNullableFilter<"Widget">
+    createdAt?: DateTimeFilter<"Widget"> | Date | string
+    updatedAt?: DateTimeFilter<"Widget"> | Date | string
+    campaignId?: StringFilter<"Widget"> | string
   }
 
   export type CampaignCreateWithoutWidgetsInput = {
@@ -13442,9 +13442,9 @@ export namespace Prisma {
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutCampaignsInput
     personas?: PersonaCreateNestedManyWithoutCampaignInput
     reviews?: ReviewCreateNestedManyWithoutCampaignInput
-    createdBy: UserCreateNestedOneWithoutCampaignsInput
   }
 
   export type CampaignUncheckedCreateWithoutWidgetsInput = {
@@ -13482,9 +13482,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
     personas?: PersonaUpdateManyWithoutCampaignNestedInput
     reviews?: ReviewUpdateManyWithoutCampaignNestedInput
-    createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
   }
 
   export type CampaignUncheckedUpdateWithoutWidgetsInput = {
@@ -13506,9 +13506,9 @@ export namespace Prisma {
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    widgets?: WidgetCreateNestedManyWithoutCampaignInput
-    reviews?: ReviewCreateNestedManyWithoutCampaignInput
     createdBy: UserCreateNestedOneWithoutCampaignsInput
+    reviews?: ReviewCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignUncheckedCreateWithoutPersonasInput = {
@@ -13519,8 +13519,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
-    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignCreateOrConnectWithoutPersonasInput = {
@@ -13576,9 +13576,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
-    reviews?: ReviewUpdateManyWithoutCampaignNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
+    reviews?: ReviewUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
   }
 
   export type CampaignUncheckedUpdateWithoutPersonasInput = {
@@ -13589,8 +13589,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
-    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
   }
 
   export type ReviewUpsertWithWhereUniqueWithoutPersonaInput = {
@@ -13616,9 +13616,9 @@ export namespace Prisma {
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    widgets?: WidgetCreateNestedManyWithoutCampaignInput
-    personas?: PersonaCreateNestedManyWithoutCampaignInput
     createdBy: UserCreateNestedOneWithoutCampaignsInput
+    personas?: PersonaCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignUncheckedCreateWithoutReviewsInput = {
@@ -13629,8 +13629,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     createdById: string
-    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
     personas?: PersonaUncheckedCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
   }
 
   export type CampaignCreateOrConnectWithoutReviewsInput = {
@@ -13687,9 +13687,9 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
-    personas?: PersonaUpdateManyWithoutCampaignNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCampaignsNestedInput
+    personas?: PersonaUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
   }
 
   export type CampaignUncheckedUpdateWithoutReviewsInput = {
@@ -13700,8 +13700,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdById?: StringFieldUpdateOperationsInput | string
-    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
     personas?: PersonaUncheckedUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
   }
 
   export type PersonaUpsertWithoutGeneratedReviewsInput = {
@@ -13747,8 +13747,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    sessions?: SessionCreateNestedManyWithoutUserInput
     campaigns?: CampaignCreateNestedManyWithoutCreatedByInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -13757,8 +13757,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     campaigns?: CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -13783,8 +13783,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions?: SessionUpdateManyWithoutUserNestedInput
     campaigns?: CampaignUpdateManyWithoutCreatedByNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -13793,8 +13793,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     campaigns?: CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -13893,6 +13893,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CampaignCreateWithoutCreatedByInput = {
+    id?: string
+    name: string
+    brand: string
+    status: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    personas?: PersonaCreateNestedManyWithoutCampaignInput
+    reviews?: ReviewCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetCreateNestedManyWithoutCampaignInput
+  }
+
+  export type CampaignUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    name: string
+    brand: string
+    status: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    personas?: PersonaUncheckedCreateNestedManyWithoutCampaignInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutCampaignInput
+    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
+  }
+
+  export type CampaignCreateOrConnectWithoutCreatedByInput = {
+    where: CampaignWhereUniqueInput
+    create: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type CampaignCreateManyCreatedByInputEnvelope = {
+    data: CampaignCreateManyCreatedByInput | CampaignCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionCreateWithoutUserInput = {
     id?: string
     sessionToken: string
@@ -13912,40 +13946,6 @@ export namespace Prisma {
 
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type CampaignCreateWithoutCreatedByInput = {
-    id?: string
-    name: string
-    brand: string
-    status: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    widgets?: WidgetCreateNestedManyWithoutCampaignInput
-    personas?: PersonaCreateNestedManyWithoutCampaignInput
-    reviews?: ReviewCreateNestedManyWithoutCampaignInput
-  }
-
-  export type CampaignUncheckedCreateWithoutCreatedByInput = {
-    id?: string
-    name: string
-    brand: string
-    status: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    widgets?: WidgetUncheckedCreateNestedManyWithoutCampaignInput
-    personas?: PersonaUncheckedCreateNestedManyWithoutCampaignInput
-    reviews?: ReviewUncheckedCreateNestedManyWithoutCampaignInput
-  }
-
-  export type CampaignCreateOrConnectWithoutCreatedByInput = {
-    where: CampaignWhereUniqueInput
-    create: XOR<CampaignCreateWithoutCreatedByInput, CampaignUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type CampaignCreateManyCreatedByInputEnvelope = {
-    data: CampaignCreateManyCreatedByInput | CampaignCreateManyCreatedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -13984,32 +13984,6 @@ export namespace Prisma {
     refresh_token_expires_in?: IntNullableFilter<"Account"> | number | null
   }
 
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    sessionToken?: StringFilter<"Session"> | string
-    userId?: StringFilter<"Session"> | string
-    expires?: DateTimeFilter<"Session"> | Date | string
-  }
-
   export type CampaignUpsertWithWhereUniqueWithoutCreatedByInput = {
     where: CampaignWhereUniqueInput
     update: XOR<CampaignUpdateWithoutCreatedByInput, CampaignUncheckedUpdateWithoutCreatedByInput>
@@ -14039,13 +14013,30 @@ export namespace Prisma {
     createdById?: StringFilter<"Campaign"> | string
   }
 
-  export type WidgetCreateManyCampaignInput = {
-    id?: string
-    name: string
-    template: string
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    sessionToken?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    expires?: DateTimeFilter<"Session"> | Date | string
   }
 
   export type PersonaCreateManyCampaignInput = {
@@ -14070,31 +14061,13 @@ export namespace Prisma {
     personaId?: string | null
   }
 
-  export type WidgetUpdateWithoutCampaignInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    template?: StringFieldUpdateOperationsInput | string
+  export type WidgetCreateManyCampaignInput = {
+    id?: string
+    name: string
+    template: string
     settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type WidgetUncheckedUpdateWithoutCampaignInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    template?: StringFieldUpdateOperationsInput | string
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type WidgetUncheckedUpdateManyWithoutCampaignInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    template?: StringFieldUpdateOperationsInput | string
-    settings?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PersonaUpdateWithoutCampaignInput = {
@@ -14165,6 +14138,33 @@ export namespace Prisma {
     personaId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type WidgetUpdateWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WidgetUncheckedUpdateWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WidgetUncheckedUpdateManyWithoutCampaignInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    template?: StringFieldUpdateOperationsInput | string
+    settings?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ReviewCreateManyPersonaInput = {
     id?: string
     rating: number
@@ -14220,12 +14220,6 @@ export namespace Prisma {
     refresh_token_expires_in?: number | null
   }
 
-  export type SessionCreateManyUserInput = {
-    id?: string
-    sessionToken: string
-    expires: Date | string
-  }
-
   export type CampaignCreateManyCreatedByInput = {
     id?: string
     name: string
@@ -14233,6 +14227,12 @@ export namespace Prisma {
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type SessionCreateManyUserInput = {
+    id?: string
+    sessionToken: string
+    expires: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -14280,6 +14280,39 @@ export namespace Prisma {
     refresh_token_expires_in?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
+  export type CampaignUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    personas?: PersonaUpdateManyWithoutCampaignNestedInput
+    reviews?: ReviewUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type CampaignUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    personas?: PersonaUncheckedUpdateManyWithoutCampaignNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutCampaignNestedInput
+    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
+  }
+
+  export type CampaignUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    brand?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type SessionUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionToken?: StringFieldUpdateOperationsInput | string
@@ -14296,39 +14329,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sessionToken?: StringFieldUpdateOperationsInput | string
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CampaignUpdateWithoutCreatedByInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    widgets?: WidgetUpdateManyWithoutCampaignNestedInput
-    personas?: PersonaUpdateManyWithoutCampaignNestedInput
-    reviews?: ReviewUpdateManyWithoutCampaignNestedInput
-  }
-
-  export type CampaignUncheckedUpdateWithoutCreatedByInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    widgets?: WidgetUncheckedUpdateManyWithoutCampaignNestedInput
-    personas?: PersonaUncheckedUpdateManyWithoutCampaignNestedInput
-    reviews?: ReviewUncheckedUpdateManyWithoutCampaignNestedInput
-  }
-
-  export type CampaignUncheckedUpdateManyWithoutCreatedByInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

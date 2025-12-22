@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -8,43 +5,37 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
 }
 
 model Campaign {
-  id        String   @id @default(cuid())
-  name      String
-  brand     String
-  status    String // "Active" or "Completed"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  widgets  Widget[]
-  personas Persona[]
-  reviews  Review[]
-
-  createdBy   User   @relation(fields: [createdById], references: [id])
+  id          String    @id @default(cuid())
+  name        String
+  brand       String
+  status      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   createdById String
+  createdBy   User      @relation(fields: [createdById], references: [id])
+  personas    Persona[]
+  reviews     Review[]
+  widgets     Widget[]
 }
 
 model Widget {
   id         String   @id @default(cuid())
   name       String
-  template   String // "AGGREGATED", "GOOGLE", "IMAGE", "AI_GEN"
-  settings   Json? // Stores customization (colors, fonts, etc.)
+  template   String
+  settings   Json?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model Persona {
   id               String   @id @default(cuid())
-  label            String // "P1", "P2", "P3", "P4"
+  label            String
   rating           Int
   brand            String
   foodType         String
@@ -52,43 +43,39 @@ model Persona {
   boughtFrom       String
   issue            String?
   count            Int
-  campaign         Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   campaignId       String
-  generatedReviews Review[] // Reviews generated from this persona
+  campaign         Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  generatedReviews Review[]
 }
 
 model Review {
-  id        String   @id @default(cuid())
-  rating    Int
-  text      String
-  reviewer  String
-  verified  Boolean  @default(true)
-  createdAt DateTime @default(now())
-
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  rating     Int
+  text       String
+  reviewer   String
+  verified   Boolean  @default(true)
+  createdAt  DateTime @default(now())
   campaignId String
-
-  // Optional: link to a specific persona if AI generated
-  persona   Persona? @relation(fields: [personaId], references: [id])
-  personaId String?
+  personaId  String?
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  persona    Persona? @relation(fields: [personaId], references: [id])
 }
 
-// Necessary for Next auth
 model Account {
   id                       String  @id @default(cuid())
   userId                   String
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String? // @db.Text
-  access_token             String? // @db.Text
+  refresh_token            String?
+  access_token             String?
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String? // @db.Text
+  id_token                 String?
   session_state            String?
-  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   refresh_token_expires_in Int?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -108,8 +95,8 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[]
   campaigns     Campaign[]
+  sessions      Session[]
 }
 
 model VerificationToken {

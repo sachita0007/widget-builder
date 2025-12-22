@@ -47,6 +47,10 @@ interface WidgetPreviewProps {
         fontStyle: string;
         showBadge: boolean;
         cornerRadius: string;
+        layoutType?: string;
+        gridCols?: number;
+        gridRows?: number;
+        infiniteScroll?: boolean;
     };
     isMobilePreview?: boolean;
 }
@@ -182,8 +186,12 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     const { primaryColor, secondaryColor, cornerRadius, showBadge, layoutType = 'GRID', gridCols = 3, gridRows = 2, infiniteScroll = false } = config;
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
 
-    const displayCount = layoutType === 'GRID' ? (gridCols * gridRows) : reviews.length;
-    const displayedReviews = reviews.slice(0, displayCount);
+    // Loop data if infinite scroll is enabled
+    const baseReviews = (reviews && reviews.length > 0) ? reviews : [];
+    const reviewsToDisplay = infiniteScroll ? [...baseReviews, ...baseReviews, ...baseReviews, ...baseReviews, ...baseReviews] : baseReviews;
+
+    const displayCount = layoutType === 'GRID' ? (gridCols * gridRows) : reviewsToDisplay.length;
+    const displayedReviews = reviewsToDisplay.slice(0, displayCount);
 
     const gridColsClass = {
         1: 'grid-cols-1',
@@ -239,10 +247,14 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                     ))}
                 </div>
             ) : layoutType === 'LIST' ? (
-                <div className="flex flex-col gap-6">
-                    {displayedReviews.map((review: any, i: number) => (
-                        <ReviewCard key={i} review={review} config={config} className="w-full" />
-                    ))}
+                <div className="relative group/list">
+                    <div className="flex flex-col gap-6 max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                        {displayedReviews.map((review: any, i: number) => (
+                            <ReviewCard key={i} review={review} config={config} className="w-full" />
+                        ))}
+                    </div>
+                    {/* Visual fade for scrolling */}
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-100/80 to-transparent pointer-events-none rounded-b-[2rem]"></div>
                 </div>
             ) : (
                 <div className={`grid ${gridColsClass} gap-6`}>
@@ -253,10 +265,10 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             )}
 
             {infiniteScroll && (
-                <div className="mt-12 flex justify-center">
-                    <div className="flex items-center gap-3 px-6 py-3 bg-white border border-gray-100 rounded-2xl shadow-sm text-[10px] font-black text-gray-400 uppercase tracking-widest animate-pulse">
-                        <div className="w-4 h-4 rounded-full border-2 border-slate-200 border-t-slate-800 animate-spin"></div>
-                        Loading more insights...
+                <div className="mt-8 flex justify-center">
+                    <div className="flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm text-[10px] font-black text-gray-500 uppercase tracking-widest animate-pulse">
+                        <div className="w-4 h-4 rounded-full border-2 border-slate-300 border-t-slate-800 animate-spin"></div>
+                        Simulating Live Feedback Loop...
                     </div>
                 </div>
             )}

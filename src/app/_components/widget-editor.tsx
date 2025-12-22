@@ -380,7 +380,17 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                 <WidgetPreview
                                     widgetId={widgetId}
                                     template={template}
-                                    config={{ primaryColor, secondaryColor, fontStyle, showBadge, cornerRadius }}
+                                    config={{
+                                        primaryColor,
+                                        secondaryColor,
+                                        fontStyle,
+                                        showBadge,
+                                        cornerRadius,
+                                        layoutType,
+                                        gridCols,
+                                        gridRows,
+                                        infiniteScroll
+                                    }}
                                 />
                             </div>
                         </div>
