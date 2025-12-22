@@ -25,6 +25,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [verifiedBadgeLocation, setVerifiedBadgeLocation] = useState(initialWidget.settings?.verifiedBadgeLocation || "BOTH"); // BOTH, HEADER, CARDS, NONE
     const [verifiedBadgeCardPosition, setVerifiedBadgeCardPosition] = useState(initialWidget.settings?.verifiedBadgeCardPosition || "TOP_RIGHT"); // TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, AUTO
     const [aiIntent, setAiIntent] = useState(initialWidget.settings?.aiIntent || "TRIAL_VERDICT"); // TRIAL_VERDICT, SWITCHER, HABIT_BREAKER, DEMOGRAPHIC
+    const [aiContent, setAiContent] = useState(initialWidget.settings?.aiContent || null);
 
     const [template, setTemplate] = useState(initialWidget.template);
     const [cornerRadius, setCornerRadius] = useState(initialWidget.settings?.cornerRadius || "rounded-xl");
@@ -40,8 +41,65 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [hasChanges, setHasChanges] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showEmbedModal, setShowEmbedModal] = useState(false);
+    const [saveStatus, setSaveStatus] = useState<'IDLE' | 'SAVING' | 'SAVED' | 'ERROR'>('IDLE');
 
+    const utils = api.useUtils();
     const updateWidget = api.widget.update.useMutation();
+    const generateAI = api.ai.generateInsight.useMutation();
+
+    const handleGenerateAI = () => {
+        if (!initialWidget.campaign?.insights) return;
+
+        setSaveStatus('SAVING');
+        generateAI.mutate({
+            campaignId: initialWidget.campaignId,
+            intent: aiIntent as any,
+            brandName: initialWidget.campaign?.brand || "the brand",
+            insights: initialWidget.campaign.insights,
+        }, {
+            onSuccess: (data) => {
+                setAiContent(data);
+                setHasChanges(true);
+
+                // Immediately save to database to ensure persistence
+                updateWidget.mutate({
+                    id: widgetId,
+                    template,
+                    settings: {
+                        primaryColor,
+                        secondaryColor,
+                        starColor,
+                        reviewTextColor,
+                        nameColor,
+                        fontStyle,
+                        showBadge,
+                        showAggregate,
+                        cornerRadius,
+                        layoutType,
+                        gridCols,
+                        gridRows,
+                        infiniteScroll,
+                        autoScroll,
+                        animationSpeed,
+                        verifiedBadgeStyle,
+                        verifiedBadgeLocation,
+                        verifiedBadgeCardPosition,
+                        aiIntent,
+                        aiContent: data
+                    }
+                }, {
+                    onSuccess: () => {
+                        void utils.widget.getById.invalidate({ id: widgetId });
+                        setHasChanges(false);
+                        setSaveStatus('SAVED');
+                        setTimeout(() => setSaveStatus('IDLE'), 3000);
+                    },
+                    onError: () => setSaveStatus('ERROR')
+                });
+            },
+            onError: () => setSaveStatus('ERROR')
+        });
+    };
 
     const handleUpdate = (key: string, value: any) => {
         setHasChanges(true);
@@ -64,7 +122,10 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'infiniteScroll') setInfiniteScroll(value);
         if (key === 'autoScroll') setAutoScroll(value);
         if (key === 'animationSpeed') setAnimationSpeed(value);
-        if (key === 'aiIntent') setAiIntent(value);
+        if (key === 'aiIntent') {
+            setAiIntent(value);
+            setAiContent(null); // Clear previous AI content to allow fallback or regeneration
+        }
     };
 
     const handleSave = () => {
@@ -90,10 +151,17 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 verifiedBadgeStyle,
                 verifiedBadgeLocation,
                 verifiedBadgeCardPosition,
-                aiIntent
+                aiIntent,
+                aiContent
             }
         }, {
-            onSuccess: () => setHasChanges(false)
+            onSuccess: () => {
+                void utils.widget.getById.invalidate({ id: widgetId });
+                setHasChanges(false);
+                setSaveStatus('SAVED');
+                setTimeout(() => setSaveStatus('IDLE'), 3000);
+            },
+            onError: () => setSaveStatus('ERROR')
         });
     };
 
@@ -119,6 +187,26 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                             <h1 className="text-sm md:text-xl font-black text-slate-900 tracking-tight truncate max-w-[150px] md:max-w-none">{initialWidget.name}</h1>
                             {hasChanges && (
                                 <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-widest rounded-md">Draft</span>
+                            )}
+                            {saveStatus === 'SAVING' && (
+                                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-blue-600 animate-pulse">
+                                    <div className="w-1 h-1 bg-blue-600 rounded-full"></div>
+                                    Saving...
+                                </span>
+                            )}
+                            {saveStatus === 'SAVED' && (
+                                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-green-600">
+                                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    All Saved
+                                </span>
+                            )}
+                            {saveStatus === 'ERROR' && (
+                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-black uppercase tracking-widest rounded-md flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+                                    Error Saving
+                                </span>
                             )}
                         </div>
                         <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-0.5">Editor • {template}</p>
@@ -356,7 +444,22 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">🤖</div>
                                             <div className="relative z-10">
                                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-2">Editor Intelligence</h4>
-                                                <p className="text-[11px] font-medium leading-relaxed">AI will automatically pull real metrics from the {initialWidget.campaign?.brand || 'campaign'} dataset to drive these trust signals.</p>
+                                                <p className="text-[11px] font-medium leading-relaxed mb-6">AI will automatically pull real metrics from the {initialWidget.campaign?.brand || 'campaign'} dataset to drive these trust signals.</p>
+
+                                                <button
+                                                    onClick={handleGenerateAI}
+                                                    disabled={generateAI.isPending}
+                                                    className={`w-full py-3 rounded-2xl bg-white text-indigo-600 font-black text-xs uppercase tracking-widest shadow-xl shadow-indigo-500/20 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 ${generateAI.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    {generateAI.isPending ? (
+                                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                    ) : (
+                                                        <>✨ Generate with Gemini</>
+                                                    )}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -630,7 +733,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         verifiedBadgeStyle,
                                         verifiedBadgeLocation,
                                         verifiedBadgeCardPosition,
-                                        aiIntent
+                                        aiIntent,
+                                        aiContent
                                     }}
                                 />
                             </div>

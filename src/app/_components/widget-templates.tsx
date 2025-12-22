@@ -432,12 +432,18 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
         verifiedBadgeStyle = 'BADGE',
         verifiedBadgeLocation = 'BOTH',
         verifiedBadgeCardPosition = 'TOP_RIGHT',
-        aiIntent = 'TRIAL_VERDICT'
+        aiIntent = 'TRIAL_VERDICT',
+        aiContent
     } = config;
 
     const insights = campaign?.insights;
 
     const getContent = () => {
+        // If we have real AI generated content from Gemini, use it!
+        if (aiContent) {
+            return aiContent;
+        }
+
         switch (aiIntent) {
             case 'SWITCHER':
                 const competitors = Object.keys(insights?.brandLandscape ?? {}).filter(b => b !== campaign?.brand);

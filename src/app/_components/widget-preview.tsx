@@ -36,6 +36,7 @@ interface WidgetPreviewProps {
         verifiedBadgeLocation?: 'BOTH' | 'HEADER' | 'CARDS' | 'NONE';
         verifiedBadgeCardPosition?: 'TOP_RIGHT' | 'TOP_LEFT' | 'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'AUTO';
         aiIntent?: 'TRIAL_VERDICT' | 'SWITCHER' | 'HABIT_BREAKER' | 'DEMOGRAPHIC';
+        aiContent?: any;
     };
     isMobilePreview?: boolean;
 }
