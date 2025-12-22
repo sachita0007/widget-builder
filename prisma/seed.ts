@@ -34,17 +34,29 @@ async function main() {
             createdById: user.id,
             personas: {
                 create: [
-                    { label: "Cat Parents (Delhi)", rating: 5, count: 5400, brand: "Whiskas", foodType: "Dry", catAge: "Adult", boughtFrom: "Amazon", issue: "None" },
-                    { label: "New Kitten Owners", rating: 4, count: 3200, brand: "Whiskas", foodType: "Wet", catAge: "Kitten", boughtFrom: "Blinkit", issue: "None" }
+                    // Rating Personas
+                    { label: "High Satisfaction", rating: 5, count: 11306, brand: "Whiskas", foodType: "Packaged Pet Food", catAge: "Between 1-7 Years", boughtFrom: "Nearest Retailer", issue: "None" },
+                    { label: "Positive Experience", rating: 4, count: 4131, brand: "Whiskas", foodType: "Dry Food", catAge: "Less than 12 Months", boughtFrom: "Amazon", issue: "None" },
+                    { label: "Neutral Feeders", rating: 3, count: 1246, brand: "Other", foodType: "Mix of Dry and Wet Food", catAge: "Between 1-7 Years", boughtFrom: "Blinkit", issue: "None" },
+                    { label: "Lower Satisfaction", rating: 2, count: 422, brand: "Whiskas", foodType: "Dry Food", catAge: "7+ Years", boughtFrom: "Nearest Retailer", issue: "My Cat did not eat it" },
+                    { label: "Negative Feedback", rating: 1, count: 880, brand: "Whiskas", foodType: "Dry Food", catAge: "Less than 12 Months", boughtFrom: "Amazon", issue: "Delivery Package Issue" },
+
+                    // Demographic Personas (Additional counts to match your stats)
+                    { label: "Home Cooked Segment", rating: 5, count: 48696, brand: "None", foodType: "Home Cooked Food", catAge: "Less than 12 Months", boughtFrom: "None", issue: "None" },
+                    { label: "Loyal Purepet Users", rating: 4, count: 10141, brand: "Purepet", foodType: "Dry Food", catAge: "Between 1-7 Years", boughtFrom: "Nearest Retailer", issue: "None" },
+                    { label: "Drools Switchers", rating: 4, count: 9606, brand: "Drools", foodType: "Dry Food", catAge: "Between 1-7 Years", boughtFrom: "Amazon", issue: "None" },
+                    { label: "Me-O Community", rating: 5, count: 7576, brand: "Me-O", foodType: "Dry Food", catAge: "Between 1-7 Years", boughtFrom: "Nearest Retailer", issue: "None" },
+                    { label: "Retail Preference Group", rating: 5, count: 6559, brand: "Whiskas", foodType: "Wet Food", catAge: "Between 1-7 Years", boughtFrom: "Nearest Retailer", issue: "None" }
                 ]
             },
             reviews: {
                 create: [
-                    { rating: 5, reviewer: "Sarah Jenkins", text: "My tabby absolutely loves the tuna flavour. The crunch is perfect for her teeth." },
-                    { rating: 5, reviewer: "Rahul Sharma", text: "Subscription on Amazon is a lifesaver. Never run out of food now." },
+                    { rating: 5, reviewer: "Maria Lopez", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
+                    { rating: 5, reviewer: "Sarah Jenkins", text: "Subscription on Amazon is a lifesaver. Never run out of food now." },
                     { rating: 4, reviewer: "Amit Verma", text: "Good quality, but wish the packaging was resealable." },
                     { rating: 5, reviewer: "Priya Das", text: "Best value for money in the premium segment." },
-                    { rating: 5, reviewer: "Michael Scott", text: "Standard cat food, my cat is happy, I am happy." }
+                    { rating: 5, reviewer: "Jonathan Doe", text: "Great quality ingredients. You can tell they care about nutrition." },
+                    { rating: 5, reviewer: "Emily Rogers", text: "Best purchase for my kitten. She meows for it every morning!" }
                 ]
             }
         }
