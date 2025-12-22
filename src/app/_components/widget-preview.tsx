@@ -32,6 +32,9 @@ interface WidgetPreviewProps {
         autoScroll?: boolean;
         animationSpeed?: number;
         showAggregate?: boolean;
+        verifiedBadgeStyle?: 'BADGE' | 'ICON';
+        verifiedBadgeLocation?: 'BOTH' | 'HEADER' | 'CARDS' | 'NONE';
+        verifiedBadgeCardPosition?: 'TOP_RIGHT' | 'TOP_LEFT' | 'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'AUTO';
     };
     isMobilePreview?: boolean;
 }

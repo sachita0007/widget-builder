@@ -35,9 +35,50 @@ export function ImageWithFallback({ src, alt, className, useGoogleFallback = fal
         />
     );
 }
+const SHIELD_SVG = (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="M9 12l2 2 4-4" />
+    </svg>
+);
+
+export function VerifiedShield({ style = 'BADGE', tooltip = 'Verified by Freestand' }: { style?: 'BADGE' | 'ICON', tooltip?: string }) {
+    if (style === 'ICON') {
+        return (
+            <div className="group/shield relative flex items-center justify-center">
+                <div className="w-5 h-5 bg-blue-600 rounded-lg flex items-center justify-center p-1 text-white cursor-help shadow-lg shadow-blue-500/20 transition-transform hover:scale-110">
+                    {SHIELD_SVG}
+                </div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded whitespace-nowrap opacity-0 group-hover/shield:opacity-100 transition-opacity pointer-events-none z-50">
+                    {tooltip}
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-full text-white shadow-lg shadow-blue-500/20">
+            <div className="w-3.5 h-3.5 flex items-center justify-center font-bold">
+                {SHIELD_SVG}
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-widest">{tooltip}</span>
+        </div>
+    );
+}
 
 export function AggregatedTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
+    const {
+        primaryColor,
+        secondaryColor,
+        starColor,
+        nameColor,
+        reviewTextColor,
+        cornerRadius,
+        showBadge,
+        verifiedBadgeStyle = 'BADGE',
+        verifiedBadgeLocation = 'BOTH',
+        verifiedBadgeCardPosition = 'TOP_RIGHT'
+    } = config;
 
     // Calculate stats
     const total = reviews.length;
@@ -49,6 +90,12 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
             <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full -mr-16 -mt-16" style={{ backgroundColor: primaryColor }} />
 
             <div className="relative z-10">
+                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
+                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 group`}>
+                        <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                    </div>
+                )}
+
                 <div className="flex flex-col items-center text-center mb-10">
                     <div className="flex items-center gap-4 mb-4">
                         <span className="text-6xl font-black tracking-tighter" style={{ color: primaryColor }}>{avg}</span>
@@ -84,19 +131,12 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
                     })}
                 </div>
 
-                {showBadge && (
-                    <div className="pt-6 border-t border-gray-100 flex justify-between items-center group">
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white shadow-lg shadow-blue-500/20">
-                                ✓
-                            </div>
-                            <span className="text-xs font-black uppercase tracking-wider" style={{ color: nameColor }}>Freestand Verified</span>
-                        </div>
-                        <div className="px-3 py-1 bg-green-50 rounded-full">
-                            <span className="text-[10px] font-black text-green-600 uppercase">100% Authentic</span>
-                        </div>
+                {/* Previous location removed to avoid duplicates */}
+                <div className="pt-6 border-t border-gray-100 flex justify-end items-center group">
+                    <div className="px-3 py-1 bg-green-50 rounded-full">
+                        <span className="text-[10px] font-black text-green-600 uppercase">100% Authentic</span>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );
@@ -117,7 +157,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
         infiniteScroll = false,
         autoScroll = false,
         animationSpeed = 20,
-        showAggregate = true
+        showAggregate = true,
+        verifiedBadgeStyle = 'BADGE',
+        verifiedBadgeLocation = 'BOTH'
     } = config;
 
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
@@ -183,11 +225,8 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                             <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Verified Customer Feedback</h3>
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
                                 <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
-                                {showBadge && (
-                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-600 rounded-full text-white shadow-lg shadow-blue-500/20">
-                                        <div className="w-3 h-3 rounded-full bg-white flex items-center justify-center text-[8px] text-blue-600 font-bold">✓</div>
-                                        <span className="text-[9px] font-black uppercase tracking-widest">Verified</span>
-                                    </div>
+                                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
+                                    <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                                 )}
                             </div>
                         </div>
@@ -259,8 +298,29 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     );
 }
 
+const getPositionClasses = (pos: string) => {
+    switch (pos) {
+        case 'TOP_LEFT': return 'top-4 left-4';
+        case 'TOP_RIGHT': return 'top-4 right-4';
+        case 'BOTTOM_LEFT': return 'bottom-4 left-4';
+        case 'BOTTOM_RIGHT': return 'bottom-4 right-4';
+        default: return 'top-4 right-4';
+    }
+};
+
 export function ReviewCard({ review, config, className = "" }: any) {
-    const { primaryColor, secondaryColor, starColor, reviewTextColor, nameColor, cornerRadius } = config;
+    const {
+        primaryColor,
+        secondaryColor,
+        starColor,
+        reviewTextColor,
+        nameColor,
+        cornerRadius,
+        verifiedBadgeStyle,
+        verifiedBadgeLocation,
+        showBadge,
+        verifiedBadgeCardPosition = 'TOP_RIGHT'
+    } = config;
     return (
         <div
             className={`p-6 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-700 ${cornerRadius} ${className}`}
@@ -276,12 +336,6 @@ export function ReviewCard({ review, config, className = "" }: any) {
                     </div>
                     <div>
                         <div className="font-extrabold text-sm leading-none mb-1" style={{ color: nameColor }}>{review.reviewer}</div>
-                        <div className="flex items-center gap-1">
-                            <div className="w-3 h-3 rounded-full bg-blue-500 flex items-center justify-center">
-                                <div className="w-[5px] h-[5px] bg-white rounded-full"></div>
-                            </div>
-                            <span className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Verified Buyer</span>
-                        </div>
                     </div>
                 </div>
                 <div className="flex text-[10px]" style={{ color: starColor }}>
@@ -296,15 +350,31 @@ export function ReviewCard({ review, config, className = "" }: any) {
             </p>
 
             <div className="mt-5 pt-5 border-t border-gray-50 flex items-center justify-between opacity-50 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">2 days ago</span>
-                <span className="text-xs">🛡️</span>
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Verified Review</span>
             </div>
+
+            {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
+                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
+                    <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                </div>
+            )}
         </div>
     );
 }
 
 export function ImageTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
+    const {
+        primaryColor,
+        secondaryColor,
+        starColor,
+        nameColor,
+        reviewTextColor,
+        cornerRadius,
+        showBadge,
+        verifiedBadgeStyle = 'BADGE',
+        verifiedBadgeLocation = 'BOTH',
+        verifiedBadgeCardPosition = 'TOP_RIGHT'
+    } = config;
     const reviewsWithImages = [
         { id: 1, name: "Maria Lopez", rating: 5, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
         { id: 2, name: "Jonathan Doe", rating: 4, image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600", text: "Great quality ingredients. You can tell they care about nutrition." },
@@ -325,11 +395,9 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                                 ))}
                             </div>
 
-                            {showBadge && (
-                                <div className="absolute top-4 right-4 animate-pulse">
-                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-blue-500/40">
-                                        🛡️
-                                    </div>
+                            {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
+                                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
+                                    <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                                 </div>
                             )}
 
@@ -353,7 +421,18 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
 }
 
 export function AIGenTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, starColor, nameColor, reviewTextColor, cornerRadius, showBadge } = config;
+    const {
+        primaryColor,
+        secondaryColor,
+        starColor,
+        nameColor,
+        reviewTextColor,
+        cornerRadius,
+        showBadge,
+        verifiedBadgeStyle = 'BADGE',
+        verifiedBadgeLocation = 'BOTH',
+        verifiedBadgeCardPosition = 'TOP_RIGHT'
+    } = config;
 
     // In embed mode, we might want to skip the generation interaction if it's meant to be static
     // But for now, we'll keep it consistent.
@@ -385,6 +464,12 @@ export function AIGenTemplate({ reviews, config, fontClass }: any) {
                     "Our AI Engine has analyzed your customer feedback to verify authenticity and sentiment."
                 </p>
 
+                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
+                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 group`}>
+                        <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                    </div>
+                )}
+
                 <div className="flex items-center justify-between border-t border-gray-100 pt-8">
                     <div className="flex items-center gap-4">
                         <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl relative overflow-hidden group">
@@ -393,7 +478,12 @@ export function AIGenTemplate({ reviews, config, fontClass }: any) {
                         </div>
                         <div>
                             <div className="font-black text-lg leading-none mb-1" style={{ color: nameColor }}>AI Insights</div>
-                            <div className="text-xs font-bold uppercase tracking-widest" style={{ color: reviewTextColor }}>Verified Analysis</div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: reviewTextColor }}>Verified Analysis</span>
+                                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
+                                    <VerifiedShield style="ICON" tooltip="Verified by Freestand" />
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

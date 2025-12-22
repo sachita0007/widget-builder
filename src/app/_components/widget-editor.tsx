@@ -21,6 +21,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [fontStyle, setFontStyle] = useState(initialWidget.settings?.fontStyle || "sans");
     const [showBadge, setShowBadge] = useState(initialWidget.settings?.showBadge ?? true);
     const [showAggregate, setShowAggregate] = useState(initialWidget.settings?.showAggregate ?? true);
+    const [verifiedBadgeStyle, setVerifiedBadgeStyle] = useState(initialWidget.settings?.verifiedBadgeStyle || "BADGE"); // BADGE, ICON
+    const [verifiedBadgeLocation, setVerifiedBadgeLocation] = useState(initialWidget.settings?.verifiedBadgeLocation || "BOTH"); // BOTH, HEADER, CARDS, NONE
+    const [verifiedBadgeCardPosition, setVerifiedBadgeCardPosition] = useState(initialWidget.settings?.verifiedBadgeCardPosition || "TOP_RIGHT"); // TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, AUTO
 
     const [template, setTemplate] = useState(initialWidget.template);
     const [cornerRadius, setCornerRadius] = useState(initialWidget.settings?.cornerRadius || "rounded-xl");
@@ -49,6 +52,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'fontStyle') setFontStyle(value);
         if (key === 'showBadge') setShowBadge(value);
         if (key === 'showAggregate') setShowAggregate(value);
+        if (key === 'verifiedBadgeStyle') setVerifiedBadgeStyle(value);
+        if (key === 'verifiedBadgeLocation') setVerifiedBadgeLocation(value);
+        if (key === 'verifiedBadgeCardPosition') setVerifiedBadgeCardPosition(value);
         if (key === 'template') setTemplate(value);
         if (key === 'cornerRadius') setCornerRadius(value);
         if (key === 'layoutType') setLayoutType(value);
@@ -78,7 +84,10 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 gridRows,
                 infiniteScroll,
                 autoScroll,
-                animationSpeed
+                animationSpeed,
+                verifiedBadgeStyle,
+                verifiedBadgeLocation,
+                verifiedBadgeCardPosition
             }
         }, {
             onSuccess: () => setHasChanges(false)
@@ -307,6 +316,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                 )}
                                             </div>
                                         )}
+
                                     </div>
                                 )}
                             </div>
@@ -461,6 +471,83 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                     </div>
                                 </div>
 
+                                {showBadge && (
+                                    <div className="space-y-6 pt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                                        <div className="p-5 bg-white border border-slate-100 rounded-3xl shadow-sm space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h4 className="text-[13px] font-bold text-slate-900">Verified Shield Style</h4>
+                                                    <p className="text-[11px] font-medium text-slate-600">Choose how verification is displayed</p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <button
+                                                    onClick={() => handleUpdate('verifiedBadgeStyle', 'BADGE')}
+                                                    className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${verifiedBadgeStyle === 'BADGE' ? 'border-blue-500 bg-blue-50' : 'border-slate-100'}`}
+                                                >
+                                                    <div className="w-full h-8 bg-blue-600 rounded-lg flex items-center justify-center text-[10px] text-white font-bold px-2">✓ Verified</div>
+                                                    <span className="text-[10px] font-bold text-slate-600">Full Badge</span>
+                                                </button>
+                                                <button
+                                                    onClick={() => handleUpdate('verifiedBadgeStyle', 'ICON')}
+                                                    className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${verifiedBadgeStyle === 'ICON' ? 'border-blue-500 bg-blue-50' : 'border-slate-100'}`}
+                                                >
+                                                    <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm">✓</div>
+                                                    <span className="text-[10px] font-bold text-slate-600">Icon Only</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-5 bg-white border border-slate-100 rounded-3xl shadow-sm space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h4 className="text-[13px] font-bold text-slate-900">Display Location</h4>
+                                                    <p className="text-[11px] font-medium text-slate-600">Where should the shield appear?</p>
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {['BOTH', 'HEADER', 'CARDS', 'NONE'].map((loc) => (
+                                                    <button
+                                                        key={loc}
+                                                        onClick={() => handleUpdate('verifiedBadgeLocation', loc)}
+                                                        className={`px-4 py-3 rounded-xl border transition-all text-[10px] font-bold ${verifiedBadgeLocation === loc ? 'border-blue-500 bg-blue-600 text-white' : 'border-slate-100 text-slate-600 hover:bg-slate-50'}`}
+                                                    >
+                                                        {loc}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {verifiedBadgeLocation !== 'NONE' && (
+                                            <div className="p-5 bg-white border border-slate-100 rounded-3xl shadow-sm space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <h4 className="text-[13px] font-bold text-slate-900">Shield Position</h4>
+                                                        <p className="text-[11px] font-medium text-slate-600">Precise corner placement</p>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {[
+                                                        { id: 'TOP_LEFT', name: 'Top Left' },
+                                                        { id: 'TOP_RIGHT', name: 'Top Right' },
+                                                        { id: 'BOTTOM_LEFT', name: 'Bottom Left' },
+                                                        { id: 'BOTTOM_RIGHT', name: 'Bottom Right' },
+                                                        { id: 'AUTO', name: 'Auto (Best)' }
+                                                    ].map((pos) => (
+                                                        <button
+                                                            key={pos.id}
+                                                            onClick={() => handleUpdate('verifiedBadgeCardPosition', pos.id)}
+                                                            className={`px-3 py-2 rounded-xl border transition-all text-[10px] font-bold ${verifiedBadgeCardPosition === pos.id ? 'border-blue-500 bg-blue-600 text-white' : 'border-slate-100 text-slate-600 hover:bg-slate-50'}`}
+                                                        >
+                                                            {pos.name}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 <div className="p-8 border-2 border-dashed border-slate-200 rounded-[3rem] text-center bg-slate-50/30">
                                     <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto mb-5 text-xl">💡</div>
                                     <h4 className="text-xs font-bold text-slate-900 mb-2 uppercase tracking-wide">Editor Pro-Tip</h4>
@@ -497,7 +584,10 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         infiniteScroll,
                                         autoScroll,
                                         animationSpeed,
-                                        showAggregate
+                                        showAggregate,
+                                        verifiedBadgeStyle,
+                                        verifiedBadgeLocation,
+                                        verifiedBadgeCardPosition
                                     }}
                                 />
                             </div>
