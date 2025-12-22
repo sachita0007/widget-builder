@@ -51,6 +51,8 @@ interface WidgetPreviewProps {
         gridCols?: number;
         gridRows?: number;
         infiniteScroll?: boolean;
+        autoScroll?: boolean;
+        animationSpeed?: number;
     };
     isMobilePreview?: boolean;
 }
@@ -138,7 +140,7 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
                                     <span key={i} className={i < Math.round(Number(avg)) ? "text-yellow-400" : "text-gray-200"}>★</span>
                                 ))}
                             </div>
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{total} Verified Reviews</span>
+                            <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">{total} Verified Reviews</span>
                         </div>
                     </div>
                 </div>
@@ -149,8 +151,8 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
                         const pct = total ? (count / total) * 100 : 0;
                         return (
                             <div key={star} className="group flex items-center gap-4">
-                                <span className="w-12 text-xs font-black text-gray-500 flex items-center gap-1 shrink-0">
-                                    {star} <span className="text-gray-300">★</span>
+                                <span className="w-12 text-xs font-black text-gray-700 flex items-center gap-1 shrink-0">
+                                    {star} <span className="text-gray-400">★</span>
                                 </span>
                                 <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
                                     <div
@@ -158,7 +160,7 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
                                         style={{ width: `${pct}%`, backgroundColor: primaryColor }}
                                     ></div>
                                 </div>
-                                <span className="w-10 text-[10px] font-bold text-gray-400 text-right">{Math.round(pct)}%</span>
+                                <span className="w-10 text-[10px] font-bold text-gray-600 text-right">{Math.round(pct)}%</span>
                             </div>
                         );
                     })}
@@ -183,12 +185,24 @@ function AggregatedTemplate({ reviews, config, fontClass }: any) {
 }
 
 function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
-    const { primaryColor, secondaryColor, cornerRadius, showBadge, layoutType = 'GRID', gridCols = 3, gridRows = 2, infiniteScroll = false } = config;
+    const {
+        primaryColor,
+        secondaryColor,
+        cornerRadius,
+        showBadge,
+        layoutType = 'GRID',
+        gridCols = 3,
+        gridRows = 2,
+        infiniteScroll = false,
+        autoScroll = false,
+        animationSpeed = 20
+    } = config;
+
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
 
-    // Loop data if infinite scroll is enabled
+    // Seamless Looper logic: Double the reviews to create a continuous loop
     const baseReviews = (reviews && reviews.length > 0) ? reviews : [];
-    const reviewsToDisplay = infiniteScroll ? [...baseReviews, ...baseReviews, ...baseReviews, ...baseReviews, ...baseReviews] : baseReviews;
+    const reviewsToDisplay = (infiniteScroll || autoScroll) ? [...baseReviews, ...baseReviews] : baseReviews;
 
     const displayCount = layoutType === 'GRID' ? (gridCols * gridRows) : reviewsToDisplay.length;
     const displayedReviews = reviewsToDisplay.slice(0, displayCount);
@@ -203,7 +217,29 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     }[gridCols as 1 | 2 | 3 | 4 | 5 | 6] || 'grid-cols-3';
 
     return (
-        <div className={`w-full mx-auto ${fontClass}`}>
+        <div className={`w-full mx-auto ${fontClass} relative`}>
+            {/* Global style for hiding scrollbars and defining the loop animation */}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .no-scrollbar::-webkit-scrollbar { display: none; }
+                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                
+                @keyframes cinematic-scroll {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-50%); }
+                }
+                @keyframes cinematic-scroll-horizontal {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .animate-cinematic {
+                    animation: cinematic-scroll ${animationSpeed}s linear infinite;
+                }
+                .animate-cinematic-horizontal {
+                    animation: cinematic-scroll-horizontal ${animationSpeed}s linear infinite;
+                }
+            `}} />
+
             {/* Integrated Summary Section */}
             <div className="bg-white border border-gray-100 p-8 rounded-[2rem] shadow-sm mb-12 flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all duration-500">
                 <div className="flex flex-col md:flex-row items-center gap-6">
@@ -214,20 +250,20 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                                 <span key={i} className={i < Math.round(Number(avg)) ? "text-yellow-400" : "text-gray-200"}>★</span>
                             ))}
                         </div>
-                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Overall Sentiment</div>
+                        <div className="text-[10px] font-black text-gray-600 uppercase tracking-widest leading-none">Overall Sentiment</div>
                     </div>
                     <div className="hidden md:block w-px h-16 bg-gray-100/80"></div>
                     <div>
                         <h3 className="text-xl font-black text-gray-900 tracking-tight text-center md:text-left">Verified Customer Feedback</h3>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center md:text-left mt-1">Based on {reviews.length} independent reviews</p>
+                        <p className="text-xs font-bold text-gray-600 uppercase tracking-widest text-center md:text-left mt-1">Based on {reviews.length} independent reviews</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     {layoutType === 'CAROUSEL' && (
                         <div className="flex gap-2">
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-400 hover:text-gray-900">←</button>
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-400 hover:text-gray-900">→</button>
+                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-gray-900">←</button>
+                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-gray-900">→</button>
                         </div>
                     )}
                     {showBadge && (
@@ -241,34 +277,37 @@ function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
 
             {/* Layout Render */}
             {layoutType === 'CAROUSEL' ? (
-                <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide px-2 -mx-2">
-                    {displayedReviews.map((review: any, i: number) => (
-                        <ReviewCard key={i} review={review} config={config} className="w-[300px] shrink-0" />
-                    ))}
-                </div>
-            ) : layoutType === 'LIST' ? (
-                <div className="relative group/list">
-                    <div className="flex flex-col gap-6 max-h-[600px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-                        {displayedReviews.map((review: any, i: number) => (
-                            <ReviewCard key={i} review={review} config={config} className="w-full" />
-                        ))}
+                <div className="relative group/carousel overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                    <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-x-auto'} no-scrollbar py-8 px-2`}>
+                        <div className={`flex gap-6 w-max ${autoScroll ? 'animate-cinematic-horizontal' : ''}`}>
+                            {displayedReviews.map((review: any, i: number) => (
+                                <ReviewCard key={i} review={review} config={config} className="w-[300px] shrink-0" />
+                            ))}
+                        </div>
                     </div>
                     {/* Visual fade for scrolling */}
-                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-100/80 to-transparent pointer-events-none rounded-b-[2rem]"></div>
+                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                </div>
+            ) : layoutType === 'LIST' ? (
+                <div className="relative group/list overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                    <div className={`max-h-[650px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
+                        <div className={`flex flex-col gap-6 ${autoScroll ? 'animate-cinematic' : ''}`}>
+                            {displayedReviews.map((review: any, i: number) => (
+                                <ReviewCard key={i} review={review} config={config} className="w-full" />
+                            ))}
+                        </div>
+                    </div>
+                    {/* Visual fade for scrolling */}
+                    <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none z-10"></div>
                 </div>
             ) : (
-                <div className={`grid ${gridColsClass} gap-6`}>
-                    {displayedReviews.map((review: any, i: number) => (
-                        <ReviewCard key={i} review={review} config={config} />
-                    ))}
-                </div>
-            )}
-
-            {infiniteScroll && (
-                <div className="mt-8 flex justify-center">
-                    <div className="flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm text-[10px] font-black text-gray-500 uppercase tracking-widest animate-pulse">
-                        <div className="w-4 h-4 rounded-full border-2 border-slate-300 border-t-slate-800 animate-spin"></div>
-                        Simulating Live Feedback Loop...
+                <div className={`max-h-[850px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
+                    <div className={`${autoScroll ? 'animate-cinematic' : ''} grid ${gridColsClass} gap-6`}>
+                        {displayedReviews.map((review: any, i: number) => (
+                            <ReviewCard key={i} review={review} config={config} />
+                        ))}
                     </div>
                 </div>
             )}
@@ -297,7 +336,7 @@ function ReviewCard({ review, config, className = "" }: any) {
                             <div className="w-3 h-3 rounded-full bg-blue-500 flex items-center justify-center">
                                 <div className="w-[5px] h-[5px] bg-white rounded-full"></div>
                             </div>
-                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Verified Buyer</span>
+                            <span className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Verified Buyer</span>
                         </div>
                     </div>
                 </div>
@@ -308,12 +347,12 @@ function ReviewCard({ review, config, className = "" }: any) {
                 </div>
             </div>
 
-            <p className="text-gray-600 italic text-sm font-medium leading-relaxed flex-1">
+            <p className="text-slate-700 italic text-sm font-medium leading-relaxed flex-1">
                 "{review.text}"
             </p>
 
             <div className="mt-5 pt-5 border-t border-gray-50 flex items-center justify-between opacity-50 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">2 days ago</span>
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">2 days ago</span>
                 <span className="text-xs">🛡️</span>
             </div>
         </div>
@@ -411,7 +450,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                     </div>
 
                     <h3 className="text-3xl font-black text-gray-900 mb-4 tracking-tight">AI Insights Engine</h3>
-                    <p className="text-gray-500 mb-10 max-w-sm mx-auto leading-relaxed">
+                    <p className="text-gray-700 mb-10 max-w-sm mx-auto leading-relaxed font-medium">
                         Transform your raw persona data into authentic, verified reviews using our proprietary sampling-trained AI models.
                     </p>
 
@@ -444,7 +483,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Generated Based On</div>
+                            <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none mb-1">Generated Based On</div>
                             <div className="text-xs font-bold text-slate-800">{personas.find((p: any) => p.id === selectedPersona)?.label}</div>
                         </div>
                     </div>
@@ -461,7 +500,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                             </div>
                             <div>
                                 <div className="font-black text-gray-900 text-lg leading-none mb-1">{generatedReview.reviewer}</div>
-                                <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Verified Sampling Recipient</div>
+                                <div className="text-xs font-bold text-slate-600 uppercase tracking-widest">Verified Sampling Recipient</div>
                             </div>
                         </div>
                         {showBadge && (
@@ -488,7 +527,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                         <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-slate-50/50">
                             <div>
                                 <h3 className="text-2xl font-black text-gray-900 tracking-tight">Select Intelligence Data</h3>
-                                <p className="text-sm font-medium text-slate-400">Choose a persona to fuel the AI model</p>
+                                <p className="text-sm font-medium text-slate-600 border-b border-blue-100 inline-block pb-0.5">Choose a persona to fuel the AI model</p>
                             </div>
                             <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm">✕</button>
                         </div>
@@ -504,7 +543,7 @@ function AIGenTemplate({ campaignId, config, fontClass }: any) {
                                         <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🎯</div>
                                         <div className="text-left">
                                             <div className="font-black text-slate-900">{persona.label}</div>
-                                            <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{persona.count.toLocaleString()} Recipients</div>
+                                            <div className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{persona.count.toLocaleString()} Recipients</div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-6">
