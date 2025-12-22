@@ -39,7 +39,6 @@ export async function GET(
     if (!container) {
         container = document.createElement('div');
         container.style.width = '100%';
-        container.style.margin = '20px 0';
         scriptTag.parentNode.insertBefore(container, scriptTag.nextSibling);
         console.log("[Freestand] Created default container for widget ${id}.");
     }
@@ -49,7 +48,7 @@ export async function GET(
     iframe.src = baseUrl + "/widget/" + "${id}";
     iframe.style.width = '100%';
     iframe.style.height = '800px';
-    iframe.style.border = '1px dashed #ccc'; // Added temporary border for visibility debugging
+    iframe.style.border = 'none';
     iframe.style.overflow = 'hidden';
     iframe.style.backgroundColor = 'white'; // Ensure it's not invisible on dark backgrounds
     iframe.style.transition = 'height 0.3s ease';

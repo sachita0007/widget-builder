@@ -20,6 +20,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [nameColor, setNameColor] = useState(initialWidget.settings?.nameColor || "#0F172A");
     const [fontStyle, setFontStyle] = useState(initialWidget.settings?.fontStyle || "sans");
     const [showBadge, setShowBadge] = useState(initialWidget.settings?.showBadge ?? true);
+    const [showAggregate, setShowAggregate] = useState(initialWidget.settings?.showAggregate ?? true);
 
     const [template, setTemplate] = useState(initialWidget.template);
     const [cornerRadius, setCornerRadius] = useState(initialWidget.settings?.cornerRadius || "rounded-xl");
@@ -34,6 +35,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
     const [hasChanges, setHasChanges] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [showEmbedModal, setShowEmbedModal] = useState(false);
 
     const updateWidget = api.widget.update.useMutation();
 
@@ -46,6 +48,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'nameColor') setNameColor(value);
         if (key === 'fontStyle') setFontStyle(value);
         if (key === 'showBadge') setShowBadge(value);
+        if (key === 'showAggregate') setShowAggregate(value);
         if (key === 'template') setTemplate(value);
         if (key === 'cornerRadius') setCornerRadius(value);
         if (key === 'layoutType') setLayoutType(value);
@@ -68,6 +71,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 nameColor,
                 fontStyle,
                 showBadge,
+                showAggregate,
                 cornerRadius,
                 layoutType,
                 gridCols,
@@ -119,28 +123,14 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                     </button>
 
                     <button
-                        onClick={() => {
-                            const embedCode = `<script src="${window.location.origin}/api/widget/${widgetId}/embed" data-widget-id="${widgetId}"></script>`;
-                            navigator.clipboard.writeText(embedCode);
-                            setCopied(true);
-                            setTimeout(() => setCopied(false), 2000);
-                        }}
-                        className={`hidden sm:flex px-4 md:px-5 py-2.5 border rounded-xl text-xs font-bold transition-all shadow-sm items-center gap-2 ${copied
-                            ? 'bg-green-50 border-green-200 text-green-700'
-                            : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'
-                            }`}
+                        onClick={() => setShowEmbedModal(true)}
+                        className="hidden sm:flex px-4 md:px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm items-center gap-2"
                     >
-                        {copied ? (
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                        ) : (
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                        )}
-                        <span className="hidden md:inline">{copied ? 'Copied!' : 'Embed Script'}</span>
-                        <span className="md:hidden">{copied ? 'Copied!' : 'Code'}</span>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <span className="hidden md:inline">Embed Script</span>
+                        <span className="md:hidden">Code</span>
                     </button>
 
                     <button
@@ -259,6 +249,19 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                 </div>
                                             </div>
                                         )}
+
+                                        <div className="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-3xl shadow-sm">
+                                            <div>
+                                                <h3 className="text-[13px] font-bold text-slate-900">Summary Highlights</h3>
+                                                <p className="text-[11px] font-medium text-slate-600 mt-0.5">Show aggregate rating card</p>
+                                            </div>
+                                            <button
+                                                onClick={() => handleUpdate('showAggregate', !showAggregate)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all ${showAggregate ? 'bg-blue-600' : 'bg-slate-300'}`}
+                                            >
+                                                <span className={`inline-block h-4.5 w-4.5 transform rounded-full bg-white transition ${showAggregate ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                                            </button>
+                                        </div>
 
                                         <div className="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-3xl shadow-sm">
                                             <div>
@@ -493,7 +496,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         gridRows,
                                         infiniteScroll,
                                         autoScroll,
-                                        animationSpeed
+                                        animationSpeed,
+                                        showAggregate
                                     }}
                                 />
                             </div>
@@ -514,6 +518,75 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                     </div>
                 </main>
             </div>
+
+            {/* Embed Modal */}
+            {showEmbedModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div
+                        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+                        onClick={() => setShowEmbedModal(false)}
+                    ></div>
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 w-full max-w-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 relative z-10">
+                        <div className="p-8 md:p-12">
+                            <div className="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Embed Your Widget</h3>
+                                    <p className="text-sm text-slate-500 font-semibold mt-1">Copy the snippet below to display reviews on your site.</p>
+                                </div>
+                                <button
+                                    onClick={() => setShowEmbedModal(false)}
+                                    className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all border border-slate-100"
+                                >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div className="bg-slate-900 rounded-3xl p-6 relative group overflow-hidden border border-slate-800 shadow-inner">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <svg className="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+
+                                <div className="font-mono text-[11px] md:text-xs leading-relaxed text-blue-300 break-all select-all">
+                                    <span className="text-pink-400">&lt;script</span> <br />
+                                    &nbsp;&nbsp;<span className="text-blue-400">src</span>=<span className="text-emerald-400">"{typeof window !== 'undefined' ? window.location.origin : ''}/api/widget/{widgetId}/embed"</span> <br />
+                                    &nbsp;&nbsp;<span className="text-blue-400">data-widget-id</span>=<span className="text-emerald-400">"{widgetId}"</span><br />
+                                    <span className="text-pink-400">&gt;&lt;/script&gt;</span>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        const embedCode = `<script src="${window.location.origin}/api/widget/${widgetId}/embed" data-widget-id="${widgetId}"></script>`;
+                                        navigator.clipboard.writeText(embedCode);
+                                        setCopied(true);
+                                        setTimeout(() => setCopied(false), 2000);
+                                    }}
+                                    className={`absolute top-4 right-4 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all scale-95 hover:scale-100 ${copied
+                                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                                        : 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white/20'
+                                        }`}
+                                >
+                                    {copied ? 'Copied!' : 'Copy Snippet'}
+                                </button>
+                            </div>
+
+                            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="p-5 rounded-3xl bg-blue-50/50 border border-blue-100">
+                                    <h4 className="text-[10px] font-black text-blue-700 uppercase tracking-widest mb-2">Step 1</h4>
+                                    <p className="text-[11px] text-blue-900 leading-relaxed font-semibold">Paste this script tag anywhere in your HTML where you want the widget to appear.</p>
+                                </div>
+                                <div className="p-5 rounded-3xl bg-slate-50 border border-slate-100">
+                                    <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Step 2</h4>
+                                    <p className="text-[11px] text-slate-600 leading-relaxed font-semibold">The widget will automatically inject itself and adjust its height to fit the content perfectly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -31,6 +31,7 @@ interface WidgetPreviewProps {
         infiniteScroll?: boolean;
         autoScroll?: boolean;
         animationSpeed?: number;
+        showAggregate?: boolean;
     };
     isMobilePreview?: boolean;
 }

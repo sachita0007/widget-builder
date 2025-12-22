@@ -116,7 +116,8 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
         gridRows = 2,
         infiniteScroll = false,
         autoScroll = false,
-        animationSpeed = 20
+        animationSpeed = 20,
+        showAggregate = true
     } = config;
 
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
@@ -141,6 +142,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
         <div className={`w-full mx-auto ${fontClass} relative`}>
             <style dangerouslySetInnerHTML={{
                 __html: `
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap');
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
                 
@@ -160,74 +162,100 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                 }
             `}} />
 
-            <div className="bg-white border border-gray-100 p-8 rounded-[2rem] shadow-sm mb-12 flex flex-col md:flex-row items-center justify-between gap-8 group hover:shadow-xl transition-all duration-500">
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                    <div className="flex flex-col items-center md:items-start">
-                        <div className="text-5xl font-black tracking-tighter leading-none mb-2" style={{ color: nameColor }}>{avg}</div>
-                        <div className="flex text-yellow-400 gap-0.5 mb-1" style={{ color: starColor }}>
-                            {Array.from({ length: 5 }).map((_, i) => (
-                                <span key={i} className={i < Math.round(Number(avg)) ? "" : "text-gray-200"}>★</span>
-                            ))}
-                        </div>
-                        <div className="text-[10px] font-black uppercase tracking-widest leading-none" style={{ color: reviewTextColor }}>Overall Sentiment</div>
-                    </div>
-                    <div className="hidden md:block w-px h-16 bg-gray-100/80"></div>
-                    <div>
-                        <h3 className="text-xl font-black tracking-tight text-center md:text-left" style={{ color: nameColor }}>Verified Customer Feedback</h3>
-                        <p className="text-xs font-bold uppercase tracking-widest text-center md:text-left mt-1" style={{ color: reviewTextColor }}>Based on {reviews.length} independent reviews</p>
-                    </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                    {layoutType === 'CAROUSEL' && (
-                        <div className="flex gap-2">
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-blue-600">←</button>
-                            <button className="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center hover:bg-white hover:shadow-lg transition-all text-gray-600 hover:text-blue-600">→</button>
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm mb-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
+                <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
+                    {/* Left: Main Rating Info */}
+                    <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
+                        <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                            <div className="text-7xl font-black tracking-tighter leading-none mb-3" style={{ color: nameColor }}>{avg}</div>
+                            <div className="flex text-yellow-400 gap-1 mb-2" style={{ color: starColor }}>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                    <span key={i} className={`text-xl ${i < Math.round(Number(avg)) ? "" : "text-gray-200"}`}>★</span>
+                                ))}
+                            </div>
+                            <div className="text-[11px] font-black uppercase tracking-widest leading-none opacity-70" style={{ color: reviewTextColor }}>Overall Rating</div>
                         </div>
-                    )}
-                    {showBadge && (
-                        <div className="flex items-center gap-3 px-5 py-3 bg-blue-50/50 rounded-2xl border border-blue-100/50">
-                            <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white shadow-lg shadow-blue-500/20">✓</div>
-                            <span className="text-[10px] font-black text-blue-900 uppercase tracking-wider">Trusted Content</span>
+
+                        <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
+
+                        <div className="max-w-xs">
+                            <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Verified Customer Feedback</h3>
+                            <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+                                <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
+                                {showBadge && (
+                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-600 rounded-full text-white shadow-lg shadow-blue-500/20">
+                                        <div className="w-3 h-3 rounded-full bg-white flex items-center justify-center text-[8px] text-blue-600 font-bold">✓</div>
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Verified</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right: Detailed Breakdown */}
+                    {showAggregate && (
+                        <div className="w-full sm:w-80 shrink-0 border-t sm:border-t-0 sm:border-l border-gray-100 pt-8 sm:pt-0 sm:pl-12">
+                            <div className="text-[10px] font-black uppercase tracking-widest mb-6 opacity-70 text-center sm:text-left" style={{ color: reviewTextColor }}>Rating Distribution</div>
+                            <div className="flex flex-col gap-3">
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count = reviews.filter((r: any) => r.rating === star).length;
+                                    const pct = reviews.length ? Math.round((count / reviews.length) * 100) : 0;
+                                    return (
+                                        <div key={star} className="flex items-center gap-4 group/bar">
+                                            <div className="flex items-center gap-1.5 w-7 shrink-0">
+                                                <span style={{ color: reviewTextColor }} className="text-xs font-black">{star}</span>
+                                                <span style={{ color: starColor }} className="text-[11px]">★</span>
+                                            </div>
+                                            <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden relative border border-gray-100 shadow-inner">
+                                                <div className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000 group-hover/bar:scale-y-110 shadow-sm" style={{ width: `${pct}%`, backgroundColor: primaryColor }}></div>
+                                            </div>
+                                            <div style={{ color: reviewTextColor }} className="w-10 text-right text-xs font-black shrink-0 opacity-90">{pct}%</div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     )}
                 </div>
             </div>
 
-            {layoutType === 'CAROUSEL' ? (
-                <div className="relative group/carousel overflow-hidden rounded-[2.5rem] bg-slate-50/30">
-                    <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-x-auto'} no-scrollbar py-8 px-2`}>
-                        <div className={`flex gap-6 w-max ${autoScroll ? 'animate-cinematic-horizontal' : ''}`}>
+            {
+                layoutType === 'CAROUSEL' ? (
+                    <div className="relative group/carousel overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                        <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-x-auto'} no-scrollbar py-8 px-2`}>
+                            <div className={`flex gap-6 w-max ${autoScroll ? 'animate-cinematic-horizontal' : ''}`}>
+                                {displayedReviews.map((review: any, i: number) => (
+                                    <ReviewCard key={i} review={review} config={config} className="w-[300px] shrink-0" />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                    </div>
+                ) : layoutType === 'LIST' ? (
+                    <div className="relative group/list overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                        <div className={`max-h-[650px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
+                            <div className={`flex flex-col gap-6 ${autoScroll ? 'animate-cinematic' : ''}`}>
+                                {displayedReviews.map((review: any, i: number) => (
+                                    <ReviewCard key={i} review={review} config={config} className="w-full" />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none z-10"></div>
+                    </div>
+                ) : (
+                    <div className={`max-h-[850px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
+                        <div className={`${autoScroll ? 'animate-cinematic' : ''} grid ${gridColsClass} gap-6`}>
                             {displayedReviews.map((review: any, i: number) => (
-                                <ReviewCard key={i} review={review} config={config} className="w-[300px] shrink-0" />
+                                <ReviewCard key={i} review={review} config={config} />
                             ))}
                         </div>
                     </div>
-                    <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                    <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                </div>
-            ) : layoutType === 'LIST' ? (
-                <div className="relative group/list overflow-hidden rounded-[2.5rem] bg-slate-50/30">
-                    <div className={`max-h-[650px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
-                        <div className={`flex flex-col gap-6 ${autoScroll ? 'animate-cinematic' : ''}`}>
-                            {displayedReviews.map((review: any, i: number) => (
-                                <ReviewCard key={i} review={review} config={config} className="w-full" />
-                            ))}
-                        </div>
-                    </div>
-                    <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                </div>
-            ) : (
-                <div className={`max-h-[850px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
-                    <div className={`${autoScroll ? 'animate-cinematic' : ''} grid ${gridColsClass} gap-6`}>
-                        {displayedReviews.map((review: any, i: number) => (
-                            <ReviewCard key={i} review={review} config={config} />
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
 
