@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // Google SVG Icon as constant
 export const GOOGLE_G_SVG = (
@@ -384,27 +384,235 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
         showBadge,
         verifiedBadgeStyle = 'BADGE',
         verifiedBadgeLocation = 'BOTH',
-        verifiedBadgeCardPosition = 'TOP_RIGHT'
+        verifiedBadgeCardPosition = 'TOP_RIGHT',
+        visualType = 'IMAGE', // IMAGE, UGC
+        visualLayout = 'GRID', // GRID, CAROUSEL, STORY
+        gridCols = 3,
+        gridRows = 2
     } = config;
-    const reviewsWithImages = [
-        { id: 1, name: "Maria Lopez", rating: 5, image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
-        { id: 2, name: "Jonathan Doe", rating: 4, image: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600", text: "Great quality ingredients. You can tell they care about nutrition." },
-        { id: 3, name: "Emily Rogers", rating: 5, image: "https://images.unsplash.com/photo-1495360019602-e0019216ad74?w=600", text: "Best purchase for my kitten. She meows for it every morning!" },
+
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const sampleImages = [
+        { id: 1, name: "Maria Lopez", rating: 5, media: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
+        { id: 2, name: "Jonathan Doe", rating: 4, media: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600", text: "Great quality ingredients. You can tell they care about nutrition." },
+        { id: 3, name: "Emily Rogers", rating: 5, media: "https://images.unsplash.com/photo-1495360019602-e0019216ad74?w=600", text: "Best purchase for my kitten. She meows for it every morning!" },
+        { id: 4, name: "S. Williams", rating: 5, media: "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=600", text: "Verified quality. My cat has never been healthier." },
+        { id: 5, name: "R. Chen", rating: 5, media: "https://images.unsplash.com/photo-1472491235688-bdc81a63246e?w=600", text: "Highly recommend for picky eaters." },
     ];
 
-    return (
-        <div className={`max-w-6xl mx-auto ${fontClass}`}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {reviewsWithImages.map((review) => (
-                    <div key={review.id} className={`group relative bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
-                        {/* Clip wrapper for image */}
-                        <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none`} />
-                        <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
-                            <ImageWithFallback src={review.image} alt="Customer photo" className="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1" />
+    const sampleUGC = [
+        { id: 1, name: "Aria G.", rating: 5, media: "https://assets.mixkit.co/videos/preview/mixkit-cat-eating-from-its-bowl-on-the-floor-34676-large.mp4", text: "Look how excited she gets for dinner time! 😻 #CatFood #HappyCat" },
+        { id: 2, name: "Leo K.", rating: 5, media: "https://assets.mixkit.co/videos/preview/mixkit-kitten-playing-with-a-toy-on-the-couch-34675-large.mp4", text: "Energy levels are through the roof since switching to this brand. #KittenHealth" },
+        { id: 3, name: "Sarah M.", rating: 5, media: "https://assets.mixkit.co/videos/preview/mixkit-cat-lying-on-a-wooden-floor-34674-large.mp4", text: "Verified quality ingredients you can actually see. My cat loves it! #QualityPetFood" },
+    ];
 
-                            <div className="absolute top-4 left-4 flex gap-1" style={{ color: starColor }}>
+    const data = visualType === 'UGC' ? sampleUGC : sampleImages;
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (!scrollContainerRef.current) return;
+        const { scrollLeft, clientWidth } = scrollContainerRef.current;
+        const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 1.5 : scrollLeft + clientWidth / 1.5;
+        scrollContainerRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    };
+
+    const gridColsClass = {
+        1: 'grid-cols-1',
+        2: 'grid-cols-2',
+        3: 'grid-cols-3',
+        4: 'grid-cols-4',
+    }[gridCols as 1 | 2 | 3 | 4] || 'grid-cols-3';
+
+    const renderMedia = (item: any) => {
+        if (visualType === 'UGC') {
+            return (
+                <video
+                    src={item.media}
+                    className="w-full h-full object-cover"
+                    autoPlay muted loop playsInline
+                />
+            );
+        }
+        return (
+            <ImageWithFallback
+                src={item.media}
+                alt="Product review"
+                className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+            />
+        );
+    };
+
+    if (visualLayout === 'STORY') {
+        return (
+            <div className={`w-full max-w-7xl mx-auto px-4 ${fontClass} relative group/story`}>
+                {/* Navigation Arrows */}
+                <button
+                    onClick={() => scroll('left')}
+                    className="absolute left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white opacity-0 group-hover/story:opacity-100 transition-all flex items-center justify-center hover:bg-white/20"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button
+                    onClick={() => scroll('right')}
+                    className="absolute right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-white opacity-0 group-hover/story:opacity-100 transition-all flex items-center justify-center hover:bg-white/20"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                <div
+                    ref={scrollContainerRef}
+                    className="flex gap-4 md:gap-8 overflow-x-auto pb-8 no-scrollbar snap-x snap-mandatory scroll-smooth"
+                >
+                    {data.map((item) => (
+                        <div
+                            key={item.id}
+                            className={`flex-shrink-0 w-[240px] md:w-[320px] lg:w-[350px] aspect-[9/16] relative group overflow-hidden shadow-2xl snap-center transition-transform duration-500 hover:scale-[1.02] ${cornerRadius}`}
+                        >
+                            <div className="absolute inset-0 z-0">
+                                {renderMedia(item)}
+                            </div>
+
+                            {/* Instagram-style Progress Bars */}
+                            <div className="absolute top-2 inset-x-2 z-30 flex gap-1">
+                                <div className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
+                                    <div className="h-full bg-white animate-[progress_5s_linear_infinite]" />
+                                </div>
+                                <div className="h-1 flex-1 bg-white/20 rounded-full" />
+                                <div className="h-1 flex-1 bg-white/20 rounded-full" />
+                            </div>
+
+                            {/* Top Badges */}
+                            <div className="absolute top-6 left-4 right-4 z-30 flex justify-between items-center">
+                                {visualType === 'UGC' && (
+                                    <div className="flex items-center gap-1.5 px-3 py-1 bg-rose-600/90 backdrop-blur-md rounded-full text-white text-[9px] font-black uppercase tracking-widest shadow-lg">
+                                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                                        LIVE REEL
+                                    </div>
+                                )}
+                                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
+                                    <div className="scale-75 origin-right">
+                                        <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified Source" />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Cinematic Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent z-10" />
+
+                            {/* Bottom Content */}
+                            <div className="absolute inset-x-0 bottom-0 p-6 z-20 space-y-4">
+                                <div className="flex text-amber-400 text-xs drop-shadow-md">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <span key={i} className={i < item.rating ? "" : "text-white/30"}>★</span>
+                                    ))}
+                                </div>
+                                <p className="text-white text-sm font-semibold leading-relaxed line-clamp-3 mb-1 drop-shadow-sm" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
+                                    &ldquo;{item.text}&rdquo;
+                                </p>
+                                <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                                    <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center text-[10px] font-black text-white border border-white/20">
+                                        {item.name[0]}
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">{item.name}</span>
+                                        <span className="text-white/40 text-[8px] font-bold uppercase tracking-widest">Verified Collector</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <style jsx>{`
+                    @keyframes progress {
+                        0% { width: 0%; }
+                        100% { width: 100%; }
+                    }
+                `}</style>
+            </div>
+        );
+    }
+
+    if (visualLayout === 'CAROUSEL') {
+        return (
+            <div className={`w-full max-w-7xl mx-auto px-4 ${fontClass} relative group/carousel`}>
+                {/* Navigation Arrows */}
+                <button
+                    onClick={() => scroll('left')}
+                    className="absolute -left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-2xl bg-white shadow-xl border border-slate-100 text-slate-900 opacity-0 group-hover/carousel:opacity-100 transition-all flex items-center justify-center hover:bg-slate-50 hover:scale-110"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button
+                    onClick={() => scroll('right')}
+                    className="absolute -right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-2xl bg-white shadow-xl border border-slate-100 text-slate-900 opacity-0 group-hover/carousel:opacity-100 transition-all flex items-center justify-center hover:bg-slate-50 hover:scale-110"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                <div
+                    ref={scrollContainerRef}
+                    className="flex gap-6 overflow-x-auto py-8 no-scrollbar scroll-smooth snap-x snap-mandatory px-4"
+                >
+                    {data.map((item) => (
+                        <div
+                            key={item.id}
+                            className={`flex-shrink-0 w-[300px] h-[450px] group relative bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 snap-center ${cornerRadius}`}
+                            style={{ backgroundColor: secondaryColor }}
+                        >
+                            <div className="h-[65%] relative overflow-hidden">
+                                {renderMedia(item)}
+                                {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
+                                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-50 transition-all duration-300 group-hover:scale-110`}>
+                                        <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                                    </div>
+                                )}
+                                {/* Visual Type Badge */}
+                                <div className="absolute top-4 left-4 z-40 bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-md text-[8px] font-black text-white uppercase tracking-widest">
+                                    {visualType}
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <div className="flex text-[10px] gap-0.5 mb-3" style={{ color: starColor }}>
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <span key={i} className={i < item.rating ? "" : "text-slate-100"}>★</span>
+                                    ))}
+                                </div>
+                                <p className="text-sm font-semibold leading-relaxed line-clamp-3 mb-4 text-slate-700" style={{ color: reviewTextColor }}>
+                                    &ldquo;{item.text}&rdquo;
+                                </p>
+                                <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
+                                    <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-900">
+                                        {item.name[0]}
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900" style={{ color: nameColor }}>{item.name}</span>
+                                        <span className="text-[8px] font-bold text-slate-400">Customer Review</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    // Default GRID layout
+    const displayCount = gridCols * gridRows;
+    const displayedData = data.slice(0, displayCount);
+
+    return (
+        <div className={`max-w-7xl mx-auto px-4 ${fontClass}`}>
+            <div className={`grid ${gridColsClass} gap-8`}>
+                {displayedData.map((item) => (
+                    <div key={item.id} className={`group relative bg-white border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
+                        <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none z-0`} />
+                        <div className="aspect-[4/5] bg-slate-50 relative overflow-hidden">
+                            {renderMedia(item)}
+
+                            <div className="absolute top-4 left-4 flex gap-1 z-30 drop-shadow-sm" style={{ color: starColor }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={`text-sm ${i < review.rating ? "" : "text-white/30"}`}>★</span>
+                                    <span key={i} className={`text-sm ${i < item.rating ? "" : "text-white/30"}`}>★</span>
                                 ))}
                             </div>
 
@@ -414,15 +622,18 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                                 </div>
                             )}
 
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                <p className="text-white text-sm font-medium leading-relaxed mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ color: reviewTextColor }}>
-                                    "{review.text}"
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <p className="text-white text-base font-bold leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
+                                    &ldquo;{item.text}&rdquo;
                                 </p>
-                                <div className="flex items-center gap-3 border-t border-white/20 pt-4">
-                                    <div className="w-8 h-8 rounded-full border-2 border-white/30 flex items-center justify-center text-[10px] font-black text-white bg-white/10">
-                                        {review.name[0]}
+                                <div className="flex items-center gap-4 border-t border-white/10 pt-5">
+                                    <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center text-[11px] font-black text-white bg-white/5 backdrop-blur-md">
+                                        {item.name[0]}
                                     </div>
-                                    <span className="text-white text-xs font-black uppercase tracking-widest" style={{ color: nameColor }}>{review.name}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-white text-xs font-black uppercase tracking-[0.15em]" style={{ color: nameColor === '#0F172A' ? 'white' : nameColor }}>{item.name}</span>
+                                        <span className="text-white/40 text-[9px] font-black uppercase tracking-widest mt-0.5">Verified Experience</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

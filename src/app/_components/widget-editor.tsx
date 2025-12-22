@@ -37,6 +37,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [infiniteScroll, setInfiniteScroll] = useState(initialWidget.settings?.infiniteScroll ?? false);
     const [autoScroll, setAutoScroll] = useState(initialWidget.settings?.autoScroll ?? false);
     const [animationSpeed, setAnimationSpeed] = useState(initialWidget.settings?.animationSpeed || 20);
+    const [visualType, setVisualType] = useState(initialWidget.settings?.visualType || "IMAGE"); // IMAGE, UGC
+    const [visualLayout, setVisualLayout] = useState(initialWidget.settings?.visualLayout || "GRID"); // GRID, CAROUSEL, STORY
 
     const [hasChanges, setHasChanges] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -85,7 +87,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                         verifiedBadgeLocation,
                         verifiedBadgeCardPosition,
                         aiIntent,
-                        aiContent: data
+                        aiContent: data,
+                        visualType,
+                        visualLayout
                     }
                 }, {
                     onSuccess: () => {
@@ -122,6 +126,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'infiniteScroll') setInfiniteScroll(value);
         if (key === 'autoScroll') setAutoScroll(value);
         if (key === 'animationSpeed') setAnimationSpeed(value);
+        if (key === 'visualType') setVisualType(value);
+        if (key === 'visualLayout') setVisualLayout(value);
         if (key === 'aiIntent') {
             setAiIntent(value);
             setAiContent(null); // Clear previous AI content to allow fallback or regeneration
@@ -152,7 +158,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 verifiedBadgeLocation,
                 verifiedBadgeCardPosition,
                 aiIntent,
-                aiContent
+                aiContent,
+                visualType,
+                visualLayout
             }
         }, {
             onSuccess: () => {
@@ -407,7 +415,82 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                                 )}
                                             </div>
                                         )}
+                                    </div>
+                                )}
 
+                                {template === 'IMAGE' && (
+                                    <div className="space-y-8 pt-8 border-t border-slate-200 mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                                        <div className="space-y-6">
+                                            <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Content Type</h2>
+                                            <div className="flex p-1.5 bg-slate-100 rounded-2xl gap-1">
+                                                {[
+                                                    { id: 'IMAGE', name: 'Static Images', icon: '📸' },
+                                                    { id: 'UGC', name: 'Video UGC', icon: '🎥' }
+                                                ].map((t) => (
+                                                    <button
+                                                        key={t.id}
+                                                        onClick={() => handleUpdate('visualType', t.id)}
+                                                        className={`flex-1 py-3 flex flex-col items-center gap-1.5 rounded-xl transition-all ${visualType === t.id
+                                                            ? 'bg-white text-blue-600 shadow-sm font-bold border border-slate-200/50'
+                                                            : 'text-slate-600 font-semibold hover:text-slate-800'
+                                                            }`}
+                                                    >
+                                                        <span className="text-lg">{t.icon}</span>
+                                                        <span className="text-[10px] uppercase tracking-wider">{t.name}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">Display Layout</h2>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                {[
+                                                    { id: 'GRID', name: 'Grid', icon: '▦' },
+                                                    { id: 'CAROUSEL', name: 'Carousel', icon: '↔' },
+                                                    { id: 'STORY', name: 'Reels', icon: '📱' }
+                                                ].map((l) => (
+                                                    <button
+                                                        key={l.id}
+                                                        onClick={() => handleUpdate('visualLayout', l.id)}
+                                                        className={`py-4 flex flex-col items-center gap-2 rounded-2xl border-2 transition-all ${visualLayout === l.id
+                                                            ? 'border-blue-600 bg-blue-50/50 text-blue-700 font-bold shadow-sm'
+                                                            : 'border-slate-100 text-slate-500 hover:border-slate-200 hover:bg-slate-50'
+                                                            }`}
+                                                    >
+                                                        <span className="text-xl">{l.icon}</span>
+                                                        <span className="text-[11px] font-black uppercase tracking-tight">{l.name}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {visualLayout !== 'STORY' && (
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-2">
+                                                    <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Gallery Columns</label>
+                                                    <select
+                                                        value={gridCols}
+                                                        onChange={(e) => handleUpdate('gridCols', parseInt(e.target.value))}
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20"
+                                                    >
+                                                        {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n} Columns</option>)}
+                                                    </select>
+                                                </div>
+                                                {visualLayout === 'GRID' && (
+                                                    <div className="space-y-2">
+                                                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide px-1">Gallery Rows</label>
+                                                        <select
+                                                            value={gridRows}
+                                                            onChange={(e) => handleUpdate('gridRows', parseInt(e.target.value))}
+                                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold focus:ring-2 focus:ring-blue-500/20"
+                                                        >
+                                                            {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n} Rows</option>)}
+                                                        </select>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -734,7 +817,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         verifiedBadgeLocation,
                                         verifiedBadgeCardPosition,
                                         aiIntent,
-                                        aiContent
+                                        aiContent,
+                                        visualType,
+                                        visualLayout
                                     }}
                                 />
                             </div>
