@@ -45,11 +45,11 @@ const SHIELD_SVG = (
 export function VerifiedShield({ style = 'BADGE', tooltip = 'Verified by Freestand' }: { style?: 'BADGE' | 'ICON', tooltip?: string }) {
     if (style === 'ICON') {
         return (
-            <div className="group/shield relative flex items-center justify-center">
+            <div className="group/shield relative flex items-center justify-center z-[100]">
                 <div className="w-5 h-5 bg-blue-600 rounded-lg flex items-center justify-center p-1 text-white cursor-help shadow-lg shadow-blue-500/20 transition-transform hover:scale-110">
                     {SHIELD_SVG}
                 </div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded whitespace-nowrap opacity-0 group-hover/shield:opacity-100 transition-opacity pointer-events-none z-50">
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded whitespace-nowrap opacity-0 group-hover/shield:opacity-100 transition-opacity pointer-events-none z-[110]">
                     {tooltip}
                 </div>
             </div>
@@ -57,11 +57,16 @@ export function VerifiedShield({ style = 'BADGE', tooltip = 'Verified by Freesta
     }
 
     return (
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-full text-white shadow-lg shadow-blue-500/20">
-            <div className="w-3.5 h-3.5 flex items-center justify-center font-bold">
-                {SHIELD_SVG}
+        <div className="group/shield relative z-[100]">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-full text-white shadow-lg shadow-blue-500/20 cursor-help transition-all hover:bg-blue-700">
+                <div className="w-3.5 h-3.5 flex items-center justify-center font-bold">
+                    {SHIELD_SVG}
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest">Verified</span>
             </div>
-            <span className="text-[9px] font-black uppercase tracking-widest">{tooltip}</span>
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-[9px] font-black uppercase tracking-widest rounded whitespace-nowrap opacity-0 group-hover/shield:opacity-100 transition-opacity pointer-events-none z-[110]">
+                {tooltip}
+            </div>
         </div>
     );
 }
@@ -85,13 +90,15 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
     const avg = total ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / total).toFixed(1) : "0.0";
 
     return (
-        <div className={`p-8 border border-gray-100 ${cornerRadius} shadow-2xl w-full max-w-md mx-auto ${fontClass} transition-all relative overflow-hidden`} style={{ backgroundColor: secondaryColor }}>
-            {/* Subtle background accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full -mr-16 -mt-16" style={{ backgroundColor: primaryColor }} />
+        <div className={`p-8 border border-gray-100 ${cornerRadius} shadow-2xl w-full max-w-md mx-auto ${fontClass} transition-all relative`} style={{ backgroundColor: secondaryColor }}>
+            {/* Subtle background accent - Clipped */}
+            <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none`}>
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full -mr-16 -mt-16" style={{ backgroundColor: primaryColor }} />
+            </div>
 
             <div className="relative z-10">
                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
-                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 group`}>
+                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-50`}>
                         <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                     </div>
                 )}
@@ -205,7 +212,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             `}} />
 
 
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm mb-8 overflow-hidden group hover:shadow-xl transition-all duration-500">
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm mb-8 relative group hover:shadow-xl transition-all duration-500">
+                {/* Background clip wrapper */}
+                <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden pointer-events-none" />
                 <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
                     {/* Left: Main Rating Info */}
                     <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
@@ -226,7 +235,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
                                 <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
-                                    <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                                    <div className="relative z-50">
+                                        <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -354,7 +365,7 @@ export function ReviewCard({ review, config, className = "" }: any) {
             </div>
 
             {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
-                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
+                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-50 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
                     <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                 </div>
             )}
@@ -385,7 +396,9 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
         <div className={`max-w-6xl mx-auto ${fontClass}`}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {reviewsWithImages.map((review) => (
-                    <div key={review.id} className={`group relative bg-white border border-gray-100 shadow-sm overflow-hidden hover:shadow-2xl transition-all duration-500 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
+                    <div key={review.id} className={`group relative bg-white border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
+                        {/* Clip wrapper for image */}
+                        <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none`} />
                         <div className="aspect-[4/5] bg-gray-100 relative overflow-hidden">
                             <ImageWithFallback src={review.image} alt="Customer photo" className="w-full h-full object-cover transition duration-700 group-hover:scale-110 group-hover:rotate-1" />
 
@@ -396,7 +409,7 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                             </div>
 
                             {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
-                                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
+                                <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-50 transition-all duration-300 group-hover:scale-110 shadow-xl`}>
                                     <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                                 </div>
                             )}
@@ -485,11 +498,11 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
     return (
         <div className={`max-w-4xl mx-auto ${fontClass}`}>
             <div
-                className={`relative overflow-hidden p-8 md:p-14 border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all duration-700 ${cornerRadius}`}
+                className={`relative p-8 md:p-14 border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all duration-700 ${cornerRadius}`}
                 style={{ backgroundColor: secondaryColor }}
             >
-                {/* Premium Mesh Gradient Background */}
-                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                {/* Premium Mesh Gradient Background - Clipped container */}
+                <div className={`absolute inset-0 opacity-10 pointer-events-none overflow-hidden ${cornerRadius}`}>
                     <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400 blur-[120px]"></div>
                     <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-400 blur-[120px]"></div>
                 </div>
@@ -536,7 +549,7 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
 
                 {/* Verification Shield (Absolute) */}
                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
-                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-20`}>
+                    <div className={`absolute ${getPositionClasses(verifiedBadgeCardPosition)} z-50`}>
                         <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
                     </div>
                 )}
