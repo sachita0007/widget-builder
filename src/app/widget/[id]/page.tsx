@@ -1,0 +1,12 @@
+
+import EmbedViewer from "~/app/_components/embed-viewer";
+
+export default async function PublicWidgetPage({ params }: { params: { id: string } }) {
+    const { id } = await params;
+
+    return (
+        <div className="bg-transparent">
+            <EmbedViewer id={id} />
+        </div>
+    );
+}

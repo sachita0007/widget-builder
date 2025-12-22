@@ -33,6 +33,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [animationSpeed, setAnimationSpeed] = useState(initialWidget.settings?.animationSpeed || 20);
 
     const [hasChanges, setHasChanges] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     const updateWidget = api.widget.update.useMutation();
 
@@ -119,16 +120,27 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
                     <button
                         onClick={() => {
-                            navigator.clipboard.writeText(`<script src="https://app.freestand.in/widget/${widgetId}.js"></script>`);
-                            alert("Embed code copied!");
+                            const embedCode = `<script src="${window.location.origin}/api/widget/${widgetId}/embed" data-widget-id="${widgetId}"></script>`;
+                            navigator.clipboard.writeText(embedCode);
+                            setCopied(true);
+                            setTimeout(() => setCopied(false), 2000);
                         }}
-                        className="hidden sm:flex px-4 md:px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm items-center gap-2"
+                        className={`hidden sm:flex px-4 md:px-5 py-2.5 border rounded-xl text-xs font-bold transition-all shadow-sm items-center gap-2 ${copied
+                            ? 'bg-green-50 border-green-200 text-green-700'
+                            : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'
+                            }`}
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        <span className="hidden md:inline">Embed Script</span>
-                        <span className="md:hidden">Code</span>
+                        {copied ? (
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        ) : (
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        )}
+                        <span className="hidden md:inline">{copied ? 'Copied!' : 'Embed Script'}</span>
+                        <span className="md:hidden">{copied ? 'Copied!' : 'Code'}</span>
                     </button>
 
                     <button

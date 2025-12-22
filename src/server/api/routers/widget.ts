@@ -55,5 +55,20 @@ export const widgetRouter = createTRPCRouter({
                 where: { id: input.id },
                 include: { campaign: true }
             })
+        }),
+
+    getPublicById: publicProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ ctx, input }) => {
+            return ctx.db.widget.findUnique({
+                where: { id: input.id },
+                include: {
+                    campaign: {
+                        include: {
+                            reviews: true
+                        }
+                    }
+                }
+            })
         })
 });
