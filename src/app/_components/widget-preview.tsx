@@ -35,6 +35,7 @@ interface WidgetPreviewProps {
         verifiedBadgeStyle?: 'BADGE' | 'ICON';
         verifiedBadgeLocation?: 'BOTH' | 'HEADER' | 'CARDS' | 'NONE';
         verifiedBadgeCardPosition?: 'TOP_RIGHT' | 'TOP_LEFT' | 'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'AUTO';
+        aiIntent?: 'TRIAL_VERDICT' | 'SWITCHER' | 'HABIT_BREAKER' | 'DEMOGRAPHIC';
     };
     isMobilePreview?: boolean;
 }
@@ -78,6 +79,7 @@ export function WidgetPreview({ widgetId, template, config }: WidgetPreviewProps
     // Pass everything to template renderers
     const props = {
         campaignId: widget.campaignId,
+        campaign: widget.campaign,
         reviews: displayReviews,
         config,
         fontClass

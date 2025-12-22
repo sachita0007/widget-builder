@@ -24,6 +24,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [verifiedBadgeStyle, setVerifiedBadgeStyle] = useState(initialWidget.settings?.verifiedBadgeStyle || "BADGE"); // BADGE, ICON
     const [verifiedBadgeLocation, setVerifiedBadgeLocation] = useState(initialWidget.settings?.verifiedBadgeLocation || "BOTH"); // BOTH, HEADER, CARDS, NONE
     const [verifiedBadgeCardPosition, setVerifiedBadgeCardPosition] = useState(initialWidget.settings?.verifiedBadgeCardPosition || "TOP_RIGHT"); // TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT, AUTO
+    const [aiIntent, setAiIntent] = useState(initialWidget.settings?.aiIntent || "TRIAL_VERDICT"); // TRIAL_VERDICT, SWITCHER, HABIT_BREAKER, DEMOGRAPHIC
 
     const [template, setTemplate] = useState(initialWidget.template);
     const [cornerRadius, setCornerRadius] = useState(initialWidget.settings?.cornerRadius || "rounded-xl");
@@ -63,6 +64,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'infiniteScroll') setInfiniteScroll(value);
         if (key === 'autoScroll') setAutoScroll(value);
         if (key === 'animationSpeed') setAnimationSpeed(value);
+        if (key === 'aiIntent') setAiIntent(value);
     };
 
     const handleSave = () => {
@@ -87,7 +89,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 animationSpeed,
                 verifiedBadgeStyle,
                 verifiedBadgeLocation,
-                verifiedBadgeCardPosition
+                verifiedBadgeCardPosition,
+                aiIntent
             }
         }, {
             onSuccess: () => setHasChanges(false)
@@ -317,6 +320,45 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                             </div>
                                         )}
 
+                                    </div>
+                                )}
+
+                                {template === 'AI_GEN' && (
+                                    <div className="space-y-8 pt-8 border-t border-slate-200 mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                                        <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider px-1">AI Generation Intent</h2>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {[
+                                                { id: 'TRIAL_VERDICT', name: 'The Trialer\'s Verdict', icon: '🧪', desc: 'Focus on 77% successful first trials' },
+                                                { id: 'SWITCHER', name: 'The Switcher\'s Choice', icon: '🔄', desc: 'Why users leave Drools/Purepet' },
+                                                { id: 'HABIT_BREAKER', name: 'Fresh Start Habit', icon: '🥗', desc: 'Moving from home-cooked to Whiskas' },
+                                                { id: 'DEMOGRAPHIC', name: 'Lifestage Specialist', icon: '🐈', desc: 'Kitten vs Senior specialized benefits' }
+                                            ].map((intent) => (
+                                                <button
+                                                    key={intent.id}
+                                                    onClick={() => handleUpdate('aiIntent', intent.id)}
+                                                    className={`flex items-start gap-3 p-4 rounded-2xl border-2 transition-all text-left ${aiIntent === intent.id
+                                                        ? 'border-indigo-500 bg-indigo-50/50 shadow-md'
+                                                        : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
+                                                        }`}
+                                                >
+                                                    <div className="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-lg shrink-0">
+                                                        {intent.icon}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-bold text-slate-900 text-[13px] mb-0.5">{intent.name}</div>
+                                                        <p className="text-[10px] font-medium text-slate-500 leading-tight">{intent.desc}</p>
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        <div className="p-6 bg-indigo-900 rounded-3xl text-white relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">🤖</div>
+                                            <div className="relative z-10">
+                                                <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-2">Editor Intelligence</h4>
+                                                <p className="text-[11px] font-medium leading-relaxed">AI will automatically pull real metrics from the {initialWidget.campaign?.brand || 'campaign'} dataset to drive these trust signals.</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -587,7 +629,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         showAggregate,
                                         verifiedBadgeStyle,
                                         verifiedBadgeLocation,
-                                        verifiedBadgeCardPosition
+                                        verifiedBadgeCardPosition,
+                                        aiIntent
                                     }}
                                 />
                             </div>

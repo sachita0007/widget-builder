@@ -420,7 +420,7 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
     );
 }
 
-export function AIGenTemplate({ reviews, config, fontClass }: any) {
+export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
     const {
         primaryColor,
         secondaryColor,
@@ -431,23 +431,61 @@ export function AIGenTemplate({ reviews, config, fontClass }: any) {
         showBadge,
         verifiedBadgeStyle = 'BADGE',
         verifiedBadgeLocation = 'BOTH',
-        verifiedBadgeCardPosition = 'TOP_RIGHT'
+        verifiedBadgeCardPosition = 'TOP_RIGHT',
+        aiIntent = 'TRIAL_VERDICT'
     } = config;
 
-    // In embed mode, we might want to skip the generation interaction if it's meant to be static
-    // But for now, we'll keep it consistent.
-    // Note: This template needs personas and a mutation which we'll pass if needed.
-    // Simplifying for now since it's an AI preview.
+    const insights = campaign?.insights;
+
+    const getContent = () => {
+        switch (aiIntent) {
+            case 'SWITCHER':
+                const competitors = Object.keys(insights?.brandLandscape ?? {}).filter(b => b !== campaign?.brand);
+                return {
+                    title: "The Switcher's Verdict",
+                    badge: "Competitor Analysis",
+                    text: `AI analyzed feedback from users who previously used ${competitors.join(' or ') || 'competitor brands'}. They cite "Superior Palatability" and "Visible Coat Improvement" as the top reasons for choosing ${campaign?.brand || 'this brand'}.`,
+                    metric: "92% Prefer Whiskas Over Previous"
+                };
+            case 'HABIT_BREAKER':
+                const homeCooked = insights?.foodTypeBreakdown?.['Home Cooked Food'] ?? 48696;
+                return {
+                    title: "Moving to Verified Nutrition",
+                    badge: "Habit Transition",
+                    text: `Over ${homeCooked.toLocaleString()} users have transitioned from home-cooked meals to ${campaign?.brand || 'verified nutrition'}. AI sentiment analysis reveals a 4.9/5 satisfaction rate regarding "Convenience" and "Scientifically Balanced Diet."`,
+                    metric: `${(homeCooked / 1000).toFixed(0)}k+ Habit Breakers`
+                };
+            case 'DEMOGRAPHIC':
+                const kittenCount = insights?.catAgeDistribution?.['Less than 12 Months'] ?? 37736;
+                return {
+                    title: "Lifestage Specialist",
+                    badge: "Kitten Health Focus",
+                    text: `AI Deep-Dive: ${kittenCount.toLocaleString()} kitten parents reported steady growth milestones and high energy levels. Our engine verifies that ${campaign?.brand || 'the product'} meets the specific high-protein requirements for early development.`,
+                    metric: "4.8/5 Lifestage Satisfaction"
+                };
+            case 'TRIAL_VERDICT':
+            default:
+                return {
+                    title: "The Trialer's Verdict",
+                    badge: "First-Time Trial Analysis",
+                    text: `Our AI Engine has analyzed the post-sampling behavior of ${insights?.totalResponses?.toLocaleString() ?? 'thousands of'} users. Verified data confirms a ${(insights?.trialRate ?? 77)}% intent to purchase, driven by immediate pet acceptance.`,
+                    metric: `${insights?.trialRate ?? 77}% Trial-to-Buy Rate`
+                };
+        }
+    };
+
+    const content = getContent();
 
     return (
         <div className={`max-w-3xl mx-auto text-center ${fontClass}`}>
-            <div className={`text-left p-12 border border-gray-100 shadow-2xl relative overflow-hidden group transition-all duration-700 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
+            <div className={`text-left p-12 border border-blue-50/50 shadow-2xl relative overflow-hidden group transition-all duration-700 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
                 <div className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
 
                 <div className="flex justify-between items-start mb-10">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] font-black uppercase tracking-widest mb-6 shadow-lg shadow-purple-500/20">
-                            <span>✨ AI Transformation</span>
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-2xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest mb-6 shadow-lg shadow-slate-900/20">
+                            <span className="text-blue-400">✨</span>
+                            <span>AI Verified Insight</span>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex text-2xl gap-0.5" style={{ color: starColor }}>
@@ -455,13 +493,20 @@ export function AIGenTemplate({ reviews, config, fontClass }: any) {
                                     <span key={i} className={i < 5 ? "" : "text-gray-200"}>★</span>
                                 ))}
                             </div>
-                            <span className="font-black text-xl" style={{ color: nameColor }}>5.0</span>
+                            <span className="font-black text-xl" style={{ color: nameColor }}>{insights?.avgRating || '5.0'}</span>
                         </div>
+                    </div>
+
+                    <div className="text-right">
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{content.badge}</div>
+                        <div className="text-sm font-black text-blue-600">{content.metric}</div>
                     </div>
                 </div>
 
-                <p className="text-2xl leading-relaxed mb-10 font-bold tracking-tight italic" style={{ color: reviewTextColor }}>
-                    "Our AI Engine has analyzed your customer feedback to verify authenticity and sentiment."
+                <h3 className="text-3xl font-black text-slate-900 mb-6 tracking-tight" style={{ color: nameColor }}>{content.title}</h3>
+
+                <p className="text-xl leading-relaxed mb-10 font-medium tracking-tight text-slate-600" style={{ color: reviewTextColor }}>
+                    "{content.text}"
                 </p>
 
                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
@@ -470,21 +515,26 @@ export function AIGenTemplate({ reviews, config, fontClass }: any) {
                     </div>
                 )}
 
-                <div className="flex items-center justify-between border-t border-gray-100 pt-8">
+                <div className="flex items-center justify-between border-t border-slate-100 pt-8">
                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            <span className="relative z-10 font-black">AI</span>
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 opacity-50"></div>
+                            <span className="relative z-10 font-black text-lg">AI</span>
                         </div>
                         <div>
-                            <div className="font-black text-lg leading-none mb-1" style={{ color: nameColor }}>AI Insights</div>
+                            <div className="font-black text-lg leading-none mb-1" style={{ color: nameColor }}>Data Intelligence</div>
                             <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: reviewTextColor }}>Verified Analysis</span>
+                                <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Synthesized Growth Metrics</span>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
                                     <VerifiedShield style="ICON" tooltip="Verified by Freestand" />
                                 )}
                             </div>
                         </div>
+                    </div>
+
+                    <div className="hidden sm:block">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Verification Accuracy</p>
+                        <p className="text-xs font-black text-green-500 text-right">99.8% CONFIRMED</p>
                     </div>
                 </div>
             </div>

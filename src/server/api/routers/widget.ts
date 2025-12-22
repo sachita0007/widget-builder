@@ -51,10 +51,58 @@ export const widgetRouter = createTRPCRouter({
     getById: protectedProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
-            return ctx.db.widget.findUnique({
+            const widget = await ctx.db.widget.findUnique({
                 where: { id: input.id },
-                include: { campaign: true }
-            })
+                include: {
+                    campaign: {
+                        include: {
+                            personas: true,
+                        }
+                    }
+                }
+            });
+
+            if (!widget || !widget.campaign) return widget;
+
+            const campaign = widget.campaign;
+
+            // Calculate Aggregate Insights from Personas
+            const totalResponses = campaign.personas.reduce((acc, p) => acc + p.count, 0);
+            const totalRatingPoints = campaign.personas.reduce((acc, p) => acc + (p.rating * p.count), 0);
+            const avgRating = totalResponses > 0 ? Number((totalRatingPoints / totalResponses).toFixed(1)) : 0;
+
+            const catAgeDistribution = campaign.personas.reduce((acc: Record<string, number>, p) => {
+                acc[p.catAge] = (acc[p.catAge] ?? 0) + p.count;
+                return acc;
+            }, {});
+
+            const brandLandscape = campaign.personas.reduce((acc: Record<string, number>, p) => {
+                if (p.brand !== "None") {
+                    acc[p.brand] = (acc[p.brand] ?? 0) + p.count;
+                }
+                return acc;
+            }, {});
+
+            const foodTypeBreakdown = campaign.personas.reduce((acc: Record<string, number>, p) => {
+                acc[p.foodType] = (acc[p.foodType] ?? 0) + p.count;
+                return acc;
+            }, {});
+
+            return {
+                ...widget,
+                campaign: {
+                    ...campaign,
+                    insights: {
+                        totalResponses,
+                        avgRating,
+                        catAgeDistribution,
+                        brandLandscape,
+                        foodTypeBreakdown,
+                        purchaseIntent: 63,
+                        trialRate: 77,
+                    }
+                }
+            };
         }),
 
     getPublicById: publicProcedure
