@@ -23,7 +23,12 @@ async function main() {
         console.log("Using existing user:", user.id);
     }
 
-    // Clear existing data to avoid duplicates if needed, but for now we just create.
+    // Clear existing data to avoid duplicates for the specific demo user
+    console.log("Cleaning up existing data for campaigns...");
+    await db.review.deleteMany({ where: { campaign: { createdById: user.id } } });
+    await db.persona.deleteMany({ where: { campaign: { createdById: user.id } } });
+    await db.widget.deleteMany({ where: { campaign: { createdById: user.id } } });
+    await db.campaign.deleteMany({ where: { createdById: user.id } });
 
     // --- CAMPAIGN 1: WHISKAS ---
     const whiskas = await db.campaign.create({
@@ -51,12 +56,26 @@ async function main() {
             },
             reviews: {
                 create: [
-                    { rating: 5, reviewer: "Maria Lopez", text: "My tabby cat absolutely loves this food. Her coat is shinier than ever!" },
-                    { rating: 5, reviewer: "Sarah Jenkins", text: "Subscription on Amazon is a lifesaver. Never run out of food now." },
-                    { rating: 4, reviewer: "Amit Verma", text: "Good quality, but wish the packaging was resealable." },
-                    { rating: 5, reviewer: "Priya Das", text: "Best value for money in the premium segment." },
-                    { rating: 5, reviewer: "Jonathan Doe", text: "Great quality ingredients. You can tell they care about nutrition." },
-                    { rating: 5, reviewer: "Emily Rogers", text: "Best purchase for my kitten. She meows for it every morning!" }
+                    { rating: 5, reviewer: "Arnav Sharma", text: "We used to feed home cooked food but Whiskas is much easier and my 2-year-old Persian cat loved it! Her coat is much shinier now." },
+                    { rating: 5, reviewer: "Ananya Gupta", text: "My 10-month-old kitten meows for Whiskas every morning. It's so much more convenient than preparing fresh chicken every day." },
+                    { rating: 4, reviewer: "Vikram Malhotra", text: "Switched from local butcher meat to Whiskas for my adult cat. He's much more active and his digestion has improved significantly." },
+                    { rating: 5, reviewer: "Priya Das", text: "Best value for money. My cat was a fussy eater with home food, but she finished her bowl of Whiskas in seconds!" },
+                    { rating: 5, reviewer: "Ishaan Verma", text: "Great quality ingredients. You can tell they care about feline nutrition. My 3-year-old Indie cat is thriving." },
+                    { rating: 4, reviewer: "Rahul Mehra", text: "Good quality, but wish the packaging was resealable. My cat loves the taste though, better than the home cooked fish we used to give." },
+                    { rating: 5, reviewer: "Sanya Iyer", text: "Whiskas has been a game changer for my senior cat. She used to struggle with dry home food, but the wet Whiskas pouches are perfect." },
+                    { rating: 5, reviewer: "Aavya Reddy", text: "I was skeptical about packaged food, but my vet recommended Whiskas. My 6-month-old kitten is growing so fast and healthy!" },
+                    { rating: 4, reviewer: "Karan Singh", text: "Convenient and my cat loves it. Definitely easier than boiling chicken every day for him." },
+                    { rating: 5, reviewer: "Meera Nair", text: "The variety of flavors in Whiskas keeps my cat interested. He never got this excited for home cooked meals." },
+                    { rating: 5, reviewer: "Aditya Joshi", text: "Affordable and nutritious. My cat's energy levels have been amazing since we switched to Whiskas." },
+                    { rating: 4, reviewer: "Riya Kapoor", text: "My kitten's fur feels much softer after a month on Whiskas. Great product for young cats." },
+                    { rating: 5, reviewer: "Zoya Khan", text: "Perfect portion sizes. No more wasting food like we did with home prepared meals. My cat loves the gravy!" },
+                    { rating: 5, reviewer: "Kabir Bhat", text: "Only Whiskas keeps him energetic all day. He's a very active 4-year-old and this food supports him well." },
+                    { rating: 4, reviewer: "Diya Saxena", text: "Great alternative to home cooked food. My cat is much happier and less bloated now." },
+                    { rating: 5, reviewer: "Vivaan Shah", text: "Simple to serve and my cat loves every bit. The home cooked food transition was surprisingly easy." },
+                    { rating: 5, reviewer: "Kiara Bose", text: "Excellent for kittens. My little one has reached all her growth milestones perfectly on Whiskas." },
+                    { rating: 4, reviewer: "Aryan Pillai", text: "High quality cat food. My cat prefers this over any home cooked meal I've tried to make." },
+                    { rating: 5, reviewer: "Myra Ghose", text: "Whiskas is the only brand my picky eater will touch. So glad we found something she enjoys!" },
+                    { rating: 5, reviewer: "Devansh Tyagi", text: "A must-have for cat owners. Nutrient rich and very palatable for cats of all ages." }
                 ]
             }
         }
@@ -91,11 +110,11 @@ async function main() {
             },
             reviews: {
                 create: [
-                    { rating: 5, reviewer: "John Doe", text: "Classic Pedigree quality. My lab is energetic and has a great coat." },
-                    { rating: 4, reviewer: "Jane Smith", text: "He finished the bowl in seconds! Recommended." },
-                    { rating: 5, reviewer: "Rockie R.", text: "The only brand I trust for my golden retriever." },
-                    { rating: 3, reviewer: "Doge Much", text: "It's okay, but the smell is quite strong." },
-                    { rating: 5, reviewer: "Bark Bark", text: "WOOF WOOF (Translation: I love it!)" }
+                    { rating: 5, reviewer: "Abhishek Kumar", text: "My 5-year-old Labrador has been on Pedigree since he was a puppy. His coat is shiny and he's full of energy!" },
+                    { rating: 4, reviewer: "Sneha Patel", text: "Switched to Pedigree for my 2-year-old German Shepherd. He finished the bowl in seconds! His digestion has improved." },
+                    { rating: 5, reviewer: "Rohan Mehta", text: "The only brand I trust for my 7-year-old Golden Retriever. His joint health is excellent even at this age." },
+                    { rating: 5, reviewer: "Divya Krishnan", text: "My 3-year-old Indie dog loves Pedigree. His teeth are healthy and his energy levels are perfect." },
+                    { rating: 4, reviewer: "Aarav Desai", text: "Good value for money. My 1-year-old Beagle is growing well and his coat is beautiful." }
                 ]
             }
         }
@@ -125,10 +144,10 @@ async function main() {
             createdById: user.id,
             reviews: {
                 create: [
-                    { rating: 5, reviewer: "Elena G.", text: "Softest skin I've had in years. The moisture is real." },
-                    { rating: 5, reviewer: "Chris P.", text: "Doesn't irritate my sensitive skin. A staple in my shower." },
-                    { rating: 5, reviewer: "Markus S.", text: "Great scent, not too overpowering." },
-                    { rating: 4, reviewer: "Sophie T.", text: "A bit pricier than others but worth it for the quality." }
+                    { rating: 5, reviewer: "Nisha Agarwal", text: "I've been using Dove for 3 years now. My skin feels softer and more hydrated, especially during Mumbai's humid weather." },
+                    { rating: 5, reviewer: "Pooja Sharma", text: "Doesn't irritate my sensitive skin at all. Perfect for daily use and my skin looks healthier." },
+                    { rating: 4, reviewer: "Kavya Menon", text: "Great moisturizing soap. My skin used to be very dry but after 6 months of using Dove, it's much better." },
+                    { rating: 5, reviewer: "Ritika Bansal", text: "Gentle on skin and the fragrance is subtle. My dermatologist recommended it and I've seen real improvement." }
                 ]
             }
         }
@@ -149,7 +168,7 @@ async function main() {
         }
     });
 
-    // --- CAMPAIGN 4: PEPSI (Empty for testing) ---
+    // --- CAMPAIGN 4: PEPSI ---
     const pepsi = await db.campaign.create({
         data: {
             name: "Pepsi Summer Blast",

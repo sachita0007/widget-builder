@@ -231,7 +231,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                         <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
 
                         <div className="max-w-xs">
-                            <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Verified Customer Feedback</h3>
+                            <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Customer Feedback for Whiskas</h3>
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
                                 <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
@@ -506,16 +506,16 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                                         <span key={i} className={i < item.rating ? "" : "text-white/30"}>★</span>
                                     ))}
                                 </div>
-                                <p className="text-white text-sm font-semibold leading-relaxed line-clamp-3 mb-1 drop-shadow-sm" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
+                                <p className="text-white text-sm font-semibold leading-relaxed line-clamp-4 mb-1 drop-shadow-sm" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
                                     &ldquo;{item.text}&rdquo;
                                 </p>
                                 <div className="flex items-center gap-3 pt-4 border-t border-white/10">
                                     <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center text-[10px] font-black text-white border border-white/20">
                                         {item.name[0]}
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">{item.name}</span>
-                                        <span className="text-white/40 text-[8px] font-bold uppercase tracking-widest">Verified Collector</span>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-white text-[10px] font-black uppercase tracking-[0.2em] truncate">{item.name}</span>
+                                        <span className="text-white/40 text-[8px] font-bold uppercase tracking-widest truncate">Verified Collector</span>
                                     </div>
                                 </div>
                             </div>
@@ -577,16 +577,16 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                                         <span key={i} className={i < item.rating ? "" : "text-slate-100"}>★</span>
                                     ))}
                                 </div>
-                                <p className="text-sm font-semibold leading-relaxed line-clamp-3 mb-4 text-slate-700" style={{ color: reviewTextColor }}>
+                                <p className="text-sm font-semibold leading-relaxed line-clamp-4 mb-4 text-slate-700" style={{ color: reviewTextColor }}>
                                     &ldquo;{item.text}&rdquo;
                                 </p>
                                 <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
                                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-900">
                                         {item.name[0]}
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900" style={{ color: nameColor }}>{item.name}</span>
-                                        <span className="text-[8px] font-bold text-slate-400">Customer Review</span>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900 truncate" style={{ color: nameColor }}>{item.name}</span>
+                                        <span className="text-[8px] font-bold text-slate-400 truncate">Customer Review</span>
                                     </div>
                                 </div>
                             </div>
@@ -622,17 +622,17 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                                 </div>
                             )}
 
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                <p className="text-white text-base font-bold leading-relaxed mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent flex flex-col justify-end p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500 overflow-hidden">
+                                <p className="text-white text-sm font-bold leading-relaxed mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 line-clamp-4" style={{ color: reviewTextColor === '#334155' ? 'white' : reviewTextColor }}>
                                     &ldquo;{item.text}&rdquo;
                                 </p>
                                 <div className="flex items-center gap-4 border-t border-white/10 pt-5">
                                     <div className="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center text-[11px] font-black text-white bg-white/5 backdrop-blur-md">
                                         {item.name[0]}
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-white text-xs font-black uppercase tracking-[0.15em]" style={{ color: nameColor === '#0F172A' ? 'white' : nameColor }}>{item.name}</span>
-                                        <span className="text-white/40 text-[9px] font-black uppercase tracking-widest mt-0.5">Verified Experience</span>
+                                    <div className="flex flex-col min-w-0">
+                                        <span className="text-white text-xs font-black uppercase tracking-[0.15em] truncate" style={{ color: nameColor === '#0F172A' ? 'white' : nameColor }}>{item.name}</span>
+                                        <span className="text-white/40 text-[9px] font-black uppercase tracking-widest mt-0.5 truncate">Verified Experience</span>
                                     </div>
                                 </div>
                             </div>
@@ -752,7 +752,7 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
 
                     <div className="relative">
                         <span className="absolute -left-6 -top-4 text-7xl font-serif text-slate-100 pointer-events-none">“</span>
-                        <p className="text-xl md:text-2xl leading-relaxed font-medium tracking-tight text-slate-600 relative z-10" style={{ color: reviewTextColor }}>
+                        <p className="text-xl md:text-2xl leading-relaxed font-medium tracking-tight text-slate-600 relative z-10 line-clamp-6" style={{ color: reviewTextColor }}>
                             {content.text}
                         </p>
                     </div>

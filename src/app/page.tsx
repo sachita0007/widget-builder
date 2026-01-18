@@ -1,10 +1,9 @@
-
 import Link from "next/link";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-
 import { CampaignList } from "./_components/campaign-list";
 import { Sidebar } from "./_components/sidebar";
+import { DashboardHeader } from "./_components/dashboard-header";
 
 export default async function Home() {
   const session = await auth();
@@ -62,56 +61,7 @@ export default async function Home() {
         <Sidebar />
 
         <main className="flex-1 ml-64 flex flex-col">
-
-          {/* Dashboard Header */}
-          <header className="h-16 bg-white border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-30">
-            <div className="flex items-center gap-8 flex-1">
-              <div className="flex items-center gap-2">
-                <h1 className="font-bold text-gray-900">Dashboard</h1>
-                <span className="text-gray-300">/</span>
-                <span className="text-sm text-gray-500 font-medium">Overview</span>
-              </div>
-
-              <div className="hidden md:flex flex-1 max-w-md relative group">
-                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search campaigns, products or insights..."
-                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-transparent focus:border-blue-200 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none rounded-xl text-sm transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <div className="relative group">
-                <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                </button>
-                <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></div>
-              </div>
-
-              <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-bold text-gray-900 leading-none mb-0.5">{session.user.name}</p>
-                  <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Enterprise Admin</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20 border-2 border-white">
-                  {session.user.name?.[0]}
-                </div>
-                <Link href="/api/auth/signout" className="text-slate-400 hover:text-red-500 transition">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </header>
+          <DashboardHeader userName={session.user.name} />
 
           {/* Main Scrollable Content */}
           <div className="p-8 pb-16">

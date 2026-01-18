@@ -57,25 +57,26 @@ export function Sidebar() {
     ];
 
     return (
-        <aside className="w-64 bg-white border-r border-gray-200 flex flex-col fixed inset-y-0 left-0 z-40">
-            <div className="h-16 flex items-center px-6 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20">F</div>
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Freestand</span>
+        <aside className="w-64 bg-white border-r border-gray-100 flex flex-col fixed inset-y-0 left-0 z-40 transition-all">
+            <div className="h-20 flex items-center px-8 border-b border-gray-50">
+                <div className="flex items-center gap-3 group cursor-pointer">
+                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black shadow-xl shadow-blue-500/20 transform transition-transform group-hover:scale-110">F</div>
+                    <span className="font-extrabold text-2xl tracking-tighter text-gray-900 group-hover:text-blue-600 transition-colors">freestand</span>
                 </div>
             </div>
 
-            <nav className="flex-1 px-4 py-8 space-y-1 overflow-y-auto">
+            <nav className="flex-1 px-4 py-10 space-y-2 overflow-y-auto">
+                <div className="px-4 mb-4 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Main Menu</div>
                 {navItems.map((item) => (
                     <Link
                         key={item.name}
                         href={item.href}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all group ${pathname === item.href
-                                ? "bg-blue-50 text-blue-700 shadow-sm"
-                                : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                        className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-black transition-all group ${pathname === item.href
+                            ? "bg-blue-50 text-blue-700 shadow-sm shadow-blue-100/50"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                             }`}
                     >
-                        <span className={`${pathname === item.href ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"} transition-colors`}>
+                        <span className={`${pathname === item.href ? "text-blue-600 scale-110" : "text-gray-400 group-hover:text-gray-600"} transition-all duration-300`}>
                             {item.icon}
                         </span>
                         {item.name}
@@ -83,16 +84,17 @@ export function Sidebar() {
                 ))}
             </nav>
 
-            <div className="p-4 border-t border-gray-100">
-                <div className="bg-slate-50 rounded-2xl p-4">
-                    <p className="text-xs font-bold text-slate-900 mb-1">Growth Plan</p>
-                    <div className="w-full bg-slate-200 rounded-full h-1.5 mb-3">
-                        <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: "65%" }}></div>
+            <div className="p-6 border-t border-gray-50">
+                <div className="p-4 rounded-2xl bg-slate-900 text-white shadow-2xl relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative z-10 flex flex-col gap-3">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Support Hub</p>
+                        <p className="text-xs font-medium text-gray-300 leading-relaxed">Need help with your sampling campaigns?</p>
+                        <button className="w-full py-2.5 bg-white text-gray-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-50 transition-all flex items-center justify-center gap-2">
+                            <span>Documentation</span>
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                        </button>
                     </div>
-                    <p className="text-[10px] text-slate-500 mb-3">6,500 / 10,000 sampling units used this month.</p>
-                    <button className="w-full py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
-                        Upgrade Plan
-                    </button>
                 </div>
             </div>
         </aside>
