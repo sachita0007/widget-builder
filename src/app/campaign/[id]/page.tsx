@@ -6,7 +6,7 @@ import { DashboardHeader } from "../../_components/dashboard-header";
 export default async function CampaignPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 

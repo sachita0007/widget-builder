@@ -4,7 +4,7 @@ import { api, HydrateClient } from "~/trpc/server";
 import Link from "next/link";
 import { WidgetEditor } from "~/app/_components/widget-editor";
 
-export default async function EditWidgetPage({ params }: { params: { id: string } }) {
+export default async function EditWidgetPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     try {

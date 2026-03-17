@@ -1,7 +1,7 @@
 
 import EmbedViewer from "~/app/_components/embed-viewer";
 
-export default async function PublicWidgetPage({ params }: { params: { id: string } }) {
+export default async function PublicWidgetPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
     return (
