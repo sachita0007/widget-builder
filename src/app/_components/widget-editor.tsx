@@ -29,6 +29,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
     const [template, setTemplate] = useState(initialWidget.template);
     const [cornerRadius, setCornerRadius] = useState(initialWidget.settings?.cornerRadius || "rounded-xl");
+    const [headerTitle, setHeaderTitle] = useState(initialWidget.settings?.headerTitle || "Customer Feedback");
+    const [headerFontSize, setHeaderFontSize] = useState(initialWidget.settings?.headerFontSize || "text-3xl");
 
     // Advanced Layout State
     const [layoutType, setLayoutType] = useState(initialWidget.settings?.layoutType || "GRID"); // GRID, LIST, CAROUSEL
@@ -104,6 +106,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                         aiContent: data,
                         visualType,
                         visualLayout,
+                        headerTitle,
+                        headerFontSize,
                         backgroundColor,
                         cardColor,
                         reviewSentiment,
@@ -147,6 +151,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'animationSpeed') setAnimationSpeed(value);
         if (key === 'visualType') setVisualType(value);
         if (key === 'visualLayout') setVisualLayout(value);
+        if (key === 'headerTitle') setHeaderTitle(value);
+        if (key === 'headerFontSize') setHeaderFontSize(value);
         if (key === 'backgroundColor') setBackgroundColor(value);
         if (key === 'cardColor') setCardColor(value);
         if (key === 'reviewSentiment') setReviewSentiment(value);
@@ -185,6 +191,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 aiContent,
                 visualType,
                 visualLayout,
+                headerTitle,
                 backgroundColor,
                 cardColor,
                 reviewSentiment,
@@ -343,7 +350,33 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
                                 {template === 'GOOGLE' && (
                                     <div className="space-y-4 pt-6 border-t border-gray-200">
-                                        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Layout</h2>
+                                        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Header</h2>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-700">Title</label>
+                                            <input
+                                                type="text"
+                                                value={headerTitle}
+                                                onChange={(e) => handleUpdate('headerTitle', e.target.value)}
+                                                placeholder="Customer Feedback"
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300 outline-none"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-gray-700">Title Font Size</label>
+                                            <select
+                                                value={headerFontSize}
+                                                onChange={(e) => handleUpdate('headerFontSize', e.target.value)}
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300 outline-none"
+                                            >
+                                                <option value="text-xl">Small</option>
+                                                <option value="text-2xl">Medium</option>
+                                                <option value="text-3xl">Large</option>
+                                                <option value="text-4xl">Extra Large</option>
+                                                <option value="text-5xl">Huge</option>
+                                            </select>
+                                        </div>
+
+                                        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider pt-4">Layout</h2>
                                         <div className="flex p-1 bg-gray-100 rounded-lg gap-1">
                                             {[
                                                 { id: 'GRID', name: 'Grid' },
@@ -890,7 +923,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         cardColor,
                                         reviewSentiment,
                                         reviewLimit,
-                                        dateFilter
+                                        dateFilter,
+                                        headerTitle,
+                                        headerFontSize
                                     }}
                                 />
                             </div>

@@ -235,7 +235,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                         <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
 
                         <div className="max-w-xs">
-                            <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Customer Feedback for Whiskas</h3>
+                            <h3 className={`${config.headerFontSize || 'text-3xl'} font-black tracking-tight text-center sm:text-left leading-tight mb-2`} style={{ color: nameColor }}>{config.headerTitle || 'Customer Feedback'}</h3>
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
                                 <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (

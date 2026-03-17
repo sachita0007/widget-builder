@@ -44,6 +44,8 @@ interface WidgetPreviewProps {
         reviewSentiment?: 'ALL' | 'POSITIVE' | 'NEGATIVE';
         reviewLimit?: number;
         dateFilter?: 'ALL' | '7D' | '30D' | '90D' | '1Y';
+        headerTitle?: string;
+        headerFontSize?: string;
     };
     isMobilePreview?: boolean;
 }
