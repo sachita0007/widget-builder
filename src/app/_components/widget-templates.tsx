@@ -231,17 +231,17 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             }}>
                 {/* Background clip wrapper */}
                 <div className={`absolute inset-0 ${cornerRadius} overflow-hidden pointer-events-none`} />
-                <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
+                <div className="p-5 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-12">
                     {/* Left: Main Rating Info */}
-                    <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
+                    <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 flex-1">
                         <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                            <div className="text-7xl font-black tracking-tighter leading-none mb-3" style={{ color: nameColor }}>{avg}</div>
-                            <div className="flex text-yellow-400 gap-1 mb-2" style={{ color: starColor }}>
+                            <div className="text-5xl sm:text-7xl font-black tracking-tighter leading-none mb-2 sm:mb-3" style={{ color: nameColor }}>{avg}</div>
+                            <div className="flex text-yellow-400 gap-1 mb-1 sm:mb-2" style={{ color: starColor }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={`text-xl ${i < Math.round(Number(avg)) ? "" : "text-gray-200"}`}>★</span>
+                                    <span key={i} className={`text-lg sm:text-xl ${i < Math.round(Number(avg)) ? "" : "text-gray-200"}`}>★</span>
                                 ))}
                             </div>
-                            <div className="text-[11px] font-black uppercase tracking-widest leading-none opacity-70" style={{ color: reviewTextColor }}>Overall Rating</div>
+                            <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest leading-none opacity-70" style={{ color: reviewTextColor }}>Overall Rating</div>
                         </div>
 
                         <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
@@ -261,14 +261,14 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
 
                     {/* Right: Detailed Breakdown */}
                     {showAggregate && (
-                        <div className="w-full sm:w-80 shrink-0 border-t sm:border-t-0 sm:border-l border-gray-100 pt-8 sm:pt-0 sm:pl-12">
-                            <div className="text-[10px] font-black uppercase tracking-widest mb-6 opacity-70 text-center sm:text-left" style={{ color: reviewTextColor }}>Rating Distribution</div>
-                            <div className="flex flex-col gap-3">
+                        <div className="w-full sm:w-80 shrink-0 border-t sm:border-t-0 sm:border-l border-gray-100 pt-4 sm:pt-0 sm:pl-12">
+                            <div className="text-[10px] font-black uppercase tracking-widest mb-4 sm:mb-6 opacity-70 text-center sm:text-left" style={{ color: reviewTextColor }}>Rating Distribution</div>
+                            <div className="flex flex-col gap-2 sm:gap-3">
                                 {[5, 4, 3, 2, 1].map((star) => {
                                     const count = reviews.filter((r: any) => r.rating === star).length;
                                     const pct = reviews.length ? Math.round((count / reviews.length) * 100) : 0;
                                     return (
-                                        <div key={star} className="flex items-center gap-4 group/bar">
+                                        <div key={star} className="flex items-center gap-3 sm:gap-4 group/bar">
                                             <div className="flex items-center gap-1.5 w-7 shrink-0">
                                                 <span style={{ color: reviewTextColor }} className="text-xs font-black">{star}</span>
                                                 <span style={{ color: starColor }} className="text-[11px]">★</span>
