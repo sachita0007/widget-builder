@@ -45,6 +45,8 @@ interface WidgetPreviewProps {
         dateFilter?: 'ALL' | '7D' | '30D' | '90D' | '1Y';
         headerTitle?: string;
         headerFontSize?: string;
+        cardBorderColor?: string;
+        cardShadowColor?: string;
         ratingQuestionId?: string;
         reviewTextQuestionIds?: string;
     };

@@ -84,7 +84,9 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
         verifiedBadgeLocation = 'BOTH',
         verifiedBadgeCardPosition = 'TOP_RIGHT',
         backgroundColor,
-        cardColor
+        cardColor,
+        cardBorderColor,
+        cardShadowColor
     } = config;
 
     // Calculate stats
@@ -92,7 +94,11 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
     const avg = total ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / total).toFixed(1) : "0.0";
 
     return (
-        <div className={`p-6 md:p-8 border border-gray-100 ${cornerRadius} shadow-2xl w-full max-w-md mx-auto ${fontClass} transition-all relative`} style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}>
+        <div className={`${cornerRadius} w-full ${fontClass} transition-all relative`} style={{
+            backgroundColor: cardColor || secondaryColor || '#FFFFFF',
+            border: `1px solid ${cardBorderColor || '#E2E8F0'}`,
+            boxShadow: `0 4px 24px ${cardShadowColor || '#00000010'}`
+        }}>
             {/* Subtle background accent - Clipped */}
             <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none`}>
                 <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full -mr-16 -mt-16" style={{ backgroundColor: primaryColor }} />
@@ -170,7 +176,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
         verifiedBadgeStyle = 'BADGE',
         verifiedBadgeLocation = 'BOTH',
         backgroundColor,
-        cardColor
+        cardColor,
+        cardBorderColor,
+        cardShadowColor
     } = config;
 
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
@@ -192,7 +200,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     }[gridCols as 1 | 2 | 3 | 4 | 5 | 6] || 'grid-cols-3';
 
     return (
-        <div className={`w-full mx-auto ${fontClass} relative p-4 md:p-6 ${cornerRadius}`} style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
+        <div className={`w-full ${fontClass} relative ${cornerRadius}`} style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap');
@@ -216,7 +224,11 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             `}} />
 
 
-            <div className={`border border-gray-100 ${cornerRadius} shadow-sm mb-8 relative group hover:shadow-xl transition-all duration-500`} style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}>
+            <div className={`${cornerRadius} mb-8 relative group transition-all duration-500`} style={{
+                backgroundColor: cardColor || secondaryColor || '#FFFFFF',
+                border: `1px solid ${cardBorderColor || '#E2E8F0'}`,
+                boxShadow: `0 1px 3px ${cardShadowColor || '#00000010'}`
+            }}>
                 {/* Background clip wrapper */}
                 <div className={`absolute inset-0 ${cornerRadius} overflow-hidden pointer-events-none`} />
                 <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
@@ -331,12 +343,18 @@ export function ReviewCard({ review, config, className = "" }: any) {
         verifiedBadgeLocation,
         showBadge,
         verifiedBadgeCardPosition = 'TOP_RIGHT',
-        cardColor
+        cardColor,
+        cardBorderColor,
+        cardShadowColor
     } = config;
     return (
         <div
-            className={`p-6 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-700 ${cornerRadius} ${className}`}
-            style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}
+            className={`p-6 transition-all duration-500 flex flex-col h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-700 ${cornerRadius} ${className}`}
+            style={{
+                backgroundColor: cardColor || secondaryColor || '#FFFFFF',
+                border: `1px solid ${cardBorderColor || '#E2E8F0'}`,
+                boxShadow: `0 1px 3px ${cardShadowColor || '#00000010'}, 0 4px 16px ${cardShadowColor || '#00000010'}`
+            }}
         >
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">

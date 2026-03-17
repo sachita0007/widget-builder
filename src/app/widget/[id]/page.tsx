@@ -5,7 +5,7 @@ export default async function PublicWidgetPage({ params }: { params: Promise<{ i
     const { id } = await params;
 
     return (
-        <div className="bg-transparent">
+        <div className="w-full h-full bg-transparent">
             <EmbedViewer id={id} />
         </div>
     );

@@ -50,7 +50,7 @@ export async function GET(
     iframe.style.height = '800px';
     iframe.style.border = 'none';
     iframe.style.overflow = 'hidden';
-    iframe.style.backgroundColor = 'white'; // Ensure it's not invisible on dark backgrounds
+    iframe.style.backgroundColor = 'transparent';
     iframe.style.transition = 'height 0.3s ease';
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');

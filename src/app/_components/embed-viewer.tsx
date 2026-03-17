@@ -95,8 +95,8 @@ export default function EmbedViewer({ id }: { id: string }) {
     };
 
     return (
-        <div ref={containerRef} className="w-full bg-transparent overflow-x-hidden overflow-y-auto">
-            <div className="w-full max-w-7xl mx-auto py-4">
+        <div ref={containerRef} className="w-full h-full overflow-x-hidden" style={{ backgroundColor: config.backgroundColor || '#F8FAFC' }}>
+            <div className="w-full h-full">
                 {template === "AGGREGATED" && <AggregatedTemplate {...props} />}
                 {template === "GOOGLE" && <AdvancedReviewTemplate {...props} />}
                 {template === "IMAGE" && <ImageTemplate {...props} />}
