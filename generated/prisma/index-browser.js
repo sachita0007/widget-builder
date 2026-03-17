@@ -121,37 +121,14 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.CampaignScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  brand: 'brand',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
-};
-
 exports.Prisma.WidgetScalarFieldEnum = {
   id: 'id',
   name: 'name',
   template: 'template',
   settings: 'settings',
+  campaignId: 'campaignId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  campaignId: 'campaignId'
-};
-
-exports.Prisma.PersonaScalarFieldEnum = {
-  id: 'id',
-  label: 'label',
-  rating: 'rating',
-  brand: 'brand',
-  foodType: 'foodType',
-  catAge: 'catAge',
-  boughtFrom: 'boughtFrom',
-  issue: 'issue',
-  count: 'count',
-  campaignId: 'campaignId'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ReviewScalarFieldEnum = {
@@ -160,46 +137,8 @@ exports.Prisma.ReviewScalarFieldEnum = {
   text: 'text',
   reviewer: 'reviewer',
   verified: 'verified',
-  createdAt: 'createdAt',
   campaignId: 'campaignId',
-  personaId: 'personaId'
-};
-
-exports.Prisma.AccountScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state',
-  refresh_token_expires_in: 'refresh_token_expires_in'
-};
-
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image'
-};
-
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  identifier: 'identifier',
-  token: 'token',
-  expires: 'expires'
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -230,14 +169,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Campaign: 'Campaign',
   Widget: 'Widget',
-  Persona: 'Persona',
-  Review: 'Review',
-  Account: 'Account',
-  Session: 'Session',
-  User: 'User',
-  VerificationToken: 'VerificationToken'
+  Review: 'Review'
 };
 
 /**

@@ -50,14 +50,19 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const generateAI = api.ai.generateInsight.useMutation();
 
     const handleGenerateAI = () => {
-        if (!initialWidget.campaign?.insights) return;
-
         setSaveStatus('SAVING');
         generateAI.mutate({
             campaignId: initialWidget.campaignId,
             intent: aiIntent as any,
-            brandName: initialWidget.campaign?.brand || "the brand",
-            insights: initialWidget.campaign.insights,
+            brandName: "the brand",
+            insights: {
+                totalResponses: 0,
+                avgRating: 0,
+                catAgeDistribution: {},
+                brandLandscape: {},
+                foodTypeBreakdown: {},
+                trialRate: 0,
+            },
         }, {
             onSuccess: (data) => {
                 setAiContent(data);
@@ -527,7 +532,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">🤖</div>
                                             <div className="relative z-10">
                                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-indigo-300 mb-2">Editor Intelligence</h4>
-                                                <p className="text-[11px] font-medium leading-relaxed mb-6">AI will automatically pull real metrics from the {initialWidget.campaign?.brand || 'campaign'} dataset to drive these trust signals.</p>
+                                                <p className="text-[11px] font-medium leading-relaxed mb-6">AI will automatically generate trust signals for the widget.</p>
 
                                                 <button
                                                     onClick={handleGenerateAI}

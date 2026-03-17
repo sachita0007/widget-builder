@@ -49,8 +49,8 @@ export default function EmbedViewer({ id }: { id: string }) {
         );
     }
 
-    const { template, settings, campaign } = widget;
-    const reviews = campaign?.reviews || [];
+    const { template, settings, reviews: widgetReviews } = widget;
+    const reviews = widgetReviews || [];
 
     // Use dummy data if no real reviews exist
     const DUMMY_REVIEWS = [
