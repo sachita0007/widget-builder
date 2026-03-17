@@ -2,7 +2,6 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import { useRef, useEffect } from "react";
 import {
     AggregatedTemplate,
     AdvancedReviewTemplate,
@@ -11,27 +10,7 @@ import {
 } from "./widget-templates";
 
 export default function EmbedViewer({ id }: { id: string }) {
-    const containerRef = useRef<HTMLDivElement>(null);
     const { data: widget, isLoading, error } = api.widget.getPublicById.useQuery({ id });
-
-    // Auto-resize logic
-    useEffect(() => {
-        if (!containerRef.current) return;
-
-        const observer = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                const height = Math.ceil(entry.contentRect.height + 40); // add some padding
-                window.parent.postMessage({
-                    type: "freestand-resize",
-                    widgetId: id,
-                    height: height
-                }, "*");
-            }
-        });
-
-        observer.observe(containerRef.current);
-        return () => observer.disconnect();
-    }, [id, widget]);
 
     if (isLoading) {
         return (
@@ -95,7 +74,7 @@ export default function EmbedViewer({ id }: { id: string }) {
     };
 
     return (
-        <div ref={containerRef} className="w-full h-full overflow-x-hidden" style={{ backgroundColor: config.backgroundColor || '#F8FAFC' }}>
+        <div className="w-full h-screen overflow-hidden" style={{ backgroundColor: config.backgroundColor || '#F8FAFC' }}>
             <div className="w-full h-full">
                 {template === "AGGREGATED" && <AggregatedTemplate {...props} />}
                 {template === "GOOGLE" && <AdvancedReviewTemplate {...props} />}

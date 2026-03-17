@@ -94,7 +94,7 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
     const avg = total ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / total).toFixed(1) : "0.0";
 
     return (
-        <div className={`${cornerRadius} w-full ${fontClass} transition-all relative`} style={{
+        <div className={`${cornerRadius} overflow-hidden w-full ${fontClass} transition-all relative`} style={{
             backgroundColor: cardColor || secondaryColor || '#FFFFFF',
             border: `1px solid ${cardBorderColor || '#E2E8F0'}`,
             boxShadow: `0 4px 24px ${cardShadowColor || '#00000010'}`
@@ -200,13 +200,13 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     }[gridCols as 1 | 2 | 3 | 4 | 5 | 6] || 'grid-cols-3';
 
     return (
-        <div className={`w-full ${fontClass} relative ${cornerRadius}`} style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
+        <div className={`w-full h-screen flex flex-col ${fontClass} relative ${cornerRadius}`} style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap');
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-                
+
                 @keyframes cinematic-scroll {
                     0% { transform: translateY(0); }
                     100% { transform: translateY(-50%); }
@@ -224,7 +224,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             `}} />
 
 
-            <div className={`${cornerRadius} mb-8 relative group transition-all duration-500`} style={{
+            <div className={`${cornerRadius} overflow-hidden shrink-0 relative group transition-all duration-500`} style={{
                 backgroundColor: cardColor || secondaryColor || '#FFFFFF',
                 border: `1px solid ${cardBorderColor || '#E2E8F0'}`,
                 boxShadow: `0 1px 3px ${cardShadowColor || '#00000010'}`
@@ -286,6 +286,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                 </div>
             </div>
 
+            <div className="flex-1 overflow-y-auto no-scrollbar pt-4">
             {
                 layoutType === 'CAROUSEL' ? (
                     <div className={`relative group/carousel overflow-hidden ${cornerRadius}`}>
@@ -299,7 +300,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                     </div>
                 ) : layoutType === 'LIST' ? (
                     <div className={`relative group/list overflow-hidden ${cornerRadius}`}>
-                        <div className={`max-h-[650px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
+                        <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
                             <div className={`flex flex-col gap-6 ${autoScroll ? 'animate-cinematic' : ''}`}>
                                 {displayedReviews.map((review: any, i: number) => (
                                     <ReviewCard key={i} review={review} config={config} className="w-full" />
@@ -308,7 +309,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                         </div>
                     </div>
                 ) : (
-                    <div className={`max-h-[850px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
+                    <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
                         <div className={`${autoScroll ? 'animate-cinematic' : ''} grid ${gridColsClass} gap-6`}>
                             {displayedReviews.map((review: any, i: number) => (
                                 <ReviewCard key={i} review={review} config={config} />
@@ -317,6 +318,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                     </div>
                 )
             }
+            </div>
         </div >
     );
 }
