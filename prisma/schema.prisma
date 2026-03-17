@@ -8,101 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Campaign {
-  id          String    @id @default(cuid())
-  name        String
-  brand       String
-  status      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  createdById String
-  createdBy   User      @relation(fields: [createdById], references: [id])
-  personas    Persona[]
-  reviews     Review[]
-  widgets     Widget[]
-}
-
 model Widget {
   id         String   @id @default(cuid())
   name       String
   template   String
   settings   Json?
+  campaignId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  campaignId String
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-}
-
-model Persona {
-  id               String   @id @default(cuid())
-  label            String
-  rating           Int
-  brand            String
-  foodType         String
-  catAge           String
-  boughtFrom       String
-  issue            String?
-  count            Int
-  campaignId       String
-  campaign         Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  generatedReviews Review[]
-}
-
-model Review {
-  id         String   @id @default(cuid())
-  rating     Int
-  text       String
-  reviewer   String
-  verified   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  campaignId String
-  personaId  String?
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  persona    Persona? @relation(fields: [personaId], references: [id])
-}
-
-model Account {
-  id                       String  @id @default(cuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
-  refresh_token            String?
-  access_token             String?
-  expires_at               Int?
-  token_type               String?
-  scope                    String?
-  id_token                 String?
-  session_state            String?
-  refresh_token_expires_in Int?
-  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  campaigns     Campaign[]
-  sessions      Session[]
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
 }

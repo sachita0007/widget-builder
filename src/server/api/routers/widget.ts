@@ -1,122 +1,156 @@
-
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { env } from "~/env";
+
+interface GoReviewEntry {
+  claimant_id: string;
+  rating: number;
+  text: string;
+  reviewer: string;
+  verified: boolean;
+  created_at: string;
+}
+
+interface GoStandardResponse {
+  success: boolean;
+  message?: string;
+  data?: GoReviewEntry[];
+}
 
 export const widgetRouter = createTRPCRouter({
-    create: protectedProcedure
-        .input(
-            z.object({
-                name: z.string().min(1),
-                campaignId: z.string(),
-                template: z.string(),
-            }),
-        )
-        .mutation(async ({ ctx, input }) => {
-            return ctx.db.widget.create({
-                data: {
-                    name: input.name,
-                    campaignId: input.campaignId,
-                    template: input.template,
-                    settings: {}, // usage defaults handled in frontend or extended schema
-                },
-            });
-        }),
+  create: publicProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        campaignId: z.string(),
+        template: z.string(),
+        settings: z.any().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.widget.create({
+        data: {
+          name: input.name,
+          campaignId: input.campaignId,
+          template: input.template,
+          settings: input.settings ?? {},
+        },
+      });
+    }),
 
-    update: protectedProcedure
-        .input(
-            z.object({
-                id: z.string(),
-                name: z.string().optional(),
-                template: z.string().optional(),
-                settings: z.any().optional(), // Using detailed validation in real app recommended
-            }),
-        )
-        .mutation(async ({ ctx, input }) => {
-            const { id, ...data } = input;
-            return ctx.db.widget.update({
-                where: { id },
-                data,
-            });
-        }),
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().optional(),
+        template: z.string().optional(),
+        settings: z.any().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      return ctx.db.widget.update({
+        where: { id },
+        data,
+      });
+    }),
 
-    delete: protectedProcedure
-        .input(z.object({ id: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            return ctx.db.widget.delete({
-                where: { id: input.id },
-            });
-        }),
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.widget.delete({
+        where: { id: input.id },
+      });
+    }),
 
-    getById: protectedProcedure
-        .input(z.object({ id: z.string() }))
-        .query(async ({ ctx, input }) => {
-            const widget = await ctx.db.widget.findUnique({
-                where: { id: input.id },
-                include: {
-                    campaign: {
-                        include: {
-                            personas: true,
-                        }
-                    }
-                }
-            });
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.widget.findUnique({
+        where: { id: input.id },
+      });
+    }),
 
-            if (!widget || !widget.campaign) return widget;
+  getByCampaign: publicProcedure
+    .input(z.object({ campaignId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.db.widget.findMany({
+        where: { campaignId: input.campaignId },
+        orderBy: { updatedAt: "desc" },
+      });
+    }),
 
-            const campaign = widget.campaign;
+  /**
+   * Public endpoint for embedded widgets.
+   * Returns widget config + reviews from Go backend.
+   */
+  getPublicById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const widget = await ctx.db.widget.findUnique({
+        where: { id: input.id },
+      });
 
-            // Calculate Aggregate Insights from Personas
-            const totalResponses = campaign.personas.reduce((acc, p) => acc + p.count, 0);
-            const totalRatingPoints = campaign.personas.reduce((acc, p) => acc + (p.rating * p.count), 0);
-            const avgRating = totalResponses > 0 ? Number((totalRatingPoints / totalResponses).toFixed(1)) : 0;
+      if (!widget) return null;
 
-            const catAgeDistribution = campaign.personas.reduce((acc: Record<string, number>, p) => {
-                acc[p.catAge] = (acc[p.catAge] ?? 0) + p.count;
-                return acc;
-            }, {});
+      const settings = widget.settings as {
+        ratingQuestionId?: string;
+        reviewTextQuestionIds?: string;
+        dateFilter?: string;
+        reviewLimit?: number;
+      } | null;
 
-            const brandLandscape = campaign.personas.reduce((acc: Record<string, number>, p) => {
-                if (p.brand !== "None") {
-                    acc[p.brand] = (acc[p.brand] ?? 0) + p.count;
-                }
-                return acc;
-            }, {});
+      // Fetch reviews from Go backend
+      let reviews: Array<{
+        claimantId: string;
+        rating: number;
+        text: string;
+        reviewer: string;
+        verified: boolean;
+        createdAt: string;
+      }> = [];
 
-            const foodTypeBreakdown = campaign.personas.reduce((acc: Record<string, number>, p) => {
-                acc[p.foodType] = (acc[p.foodType] ?? 0) + p.count;
-                return acc;
-            }, {});
+      if (settings?.ratingQuestionId || settings?.reviewTextQuestionIds) {
+        try {
+          const url = new URL(
+            `${env.GO_BACKEND_URL}/api/v1/claimant/getWidgetReviews`,
+          );
+          url.searchParams.set("campaign_id", widget.campaignId);
+          if (settings.ratingQuestionId)
+            url.searchParams.set(
+              "rating_question_id",
+              settings.ratingQuestionId,
+            );
+          if (settings.reviewTextQuestionIds)
+            url.searchParams.set(
+              "review_text_question_ids",
+              settings.reviewTextQuestionIds,
+            );
+          if (settings.dateFilter && settings.dateFilter !== "ALL")
+            url.searchParams.set("date_filter", settings.dateFilter);
+          if (settings.reviewLimit)
+            url.searchParams.set("limit", String(settings.reviewLimit));
 
-            return {
-                ...widget,
-                campaign: {
-                    ...campaign,
-                    insights: {
-                        totalResponses,
-                        avgRating,
-                        catAgeDistribution,
-                        brandLandscape,
-                        foodTypeBreakdown,
-                        purchaseIntent: 63,
-                        trialRate: 77,
-                    }
-                }
-            };
-        }),
+          const res = await fetch(url.toString());
+          if (res.ok) {
+            const json = (await res.json()) as GoStandardResponse;
+            if (json.success && json.data) {
+              reviews = json.data.map((r) => ({
+                claimantId: r.claimant_id,
+                rating: r.rating,
+                text: r.text,
+                reviewer: r.reviewer,
+                verified: r.verified,
+                createdAt: r.created_at,
+              }));
+            }
+          }
+        } catch (err) {
+          console.error("Failed to fetch reviews from Go backend:", err);
+        }
+      }
 
-    getPublicById: publicProcedure
-        .input(z.object({ id: z.string() }))
-        .query(async ({ ctx, input }) => {
-            return ctx.db.widget.findUnique({
-                where: { id: input.id },
-                include: {
-                    campaign: {
-                        include: {
-                            reviews: true
-                        }
-                    }
-                }
-            })
-        })
+      return { ...widget, reviews };
+    }),
 });

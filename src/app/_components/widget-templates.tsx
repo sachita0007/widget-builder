@@ -82,7 +82,9 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
         showBadge,
         verifiedBadgeStyle = 'BADGE',
         verifiedBadgeLocation = 'BOTH',
-        verifiedBadgeCardPosition = 'TOP_RIGHT'
+        verifiedBadgeCardPosition = 'TOP_RIGHT',
+        backgroundColor,
+        cardColor
     } = config;
 
     // Calculate stats
@@ -90,7 +92,7 @@ export function AggregatedTemplate({ reviews, config, fontClass }: any) {
     const avg = total ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / total).toFixed(1) : "0.0";
 
     return (
-        <div className={`p-8 border border-gray-100 ${cornerRadius} shadow-2xl w-full max-w-md mx-auto ${fontClass} transition-all relative`} style={{ backgroundColor: secondaryColor }}>
+        <div className={`p-6 md:p-8 border border-gray-100 ${cornerRadius} shadow-2xl w-full max-w-md mx-auto ${fontClass} transition-all relative`} style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}>
             {/* Subtle background accent - Clipped */}
             <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none`}>
                 <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full -mr-16 -mt-16" style={{ backgroundColor: primaryColor }} />
@@ -166,7 +168,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
         animationSpeed = 20,
         showAggregate = true,
         verifiedBadgeStyle = 'BADGE',
-        verifiedBadgeLocation = 'BOTH'
+        verifiedBadgeLocation = 'BOTH',
+        backgroundColor,
+        cardColor
     } = config;
 
     const avg = reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length).toFixed(1) : "0.0";
@@ -188,7 +192,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
     }[gridCols as 1 | 2 | 3 | 4 | 5 | 6] || 'grid-cols-3';
 
     return (
-        <div className={`w-full mx-auto ${fontClass} relative`}>
+        <div className={`w-full mx-auto ${fontClass} relative p-4 md:p-6 ${cornerRadius}`} style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Outfit:wght@400;700;900&display=swap');
@@ -212,9 +216,9 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             `}} />
 
 
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] shadow-sm mb-8 relative group hover:shadow-xl transition-all duration-500">
+            <div className={`border border-gray-100 ${cornerRadius} shadow-sm mb-8 relative group hover:shadow-xl transition-all duration-500`} style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}>
                 {/* Background clip wrapper */}
-                <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden pointer-events-none" />
+                <div className={`absolute inset-0 ${cornerRadius} overflow-hidden pointer-events-none`} />
                 <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
                     {/* Left: Main Rating Info */}
                     <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
@@ -231,7 +235,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                         <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
 
                         <div className="max-w-xs">
-                            <h3 className="text-3xl font-black tracking-tight text-center sm:text-left leading-tight mb-2" style={{ color: nameColor }}>Customer Feedback for Whiskas</h3>
+                            <h3 className={`${config.headerFontSize || 'text-3xl'} font-black tracking-tight text-center sm:text-left leading-tight mb-2`} style={{ color: nameColor }}>{config.headerTitle || 'Customer Feedback'}</h3>
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
                                 <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
@@ -272,19 +276,17 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
 
             {
                 layoutType === 'CAROUSEL' ? (
-                    <div className="relative group/carousel overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                    <div className={`relative group/carousel overflow-hidden ${cornerRadius}`}>
                         <div className={`${autoScroll ? 'overflow-hidden' : 'overflow-x-auto'} no-scrollbar py-8 px-2`}>
                             <div className={`flex gap-6 w-max ${autoScroll ? 'animate-cinematic-horizontal' : ''}`}>
                                 {displayedReviews.map((review: any, i: number) => (
-                                    <ReviewCard key={i} review={review} config={config} className="w-[300px] shrink-0" />
+                                    <ReviewCard key={i} review={review} config={config} className="w-[260px] md:w-[300px] shrink-0" />
                                 ))}
                             </div>
                         </div>
-                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white via-white/40 to-transparent pointer-events-none z-10"></div>
                     </div>
                 ) : layoutType === 'LIST' ? (
-                    <div className="relative group/list overflow-hidden rounded-[2.5rem] bg-slate-50/30">
+                    <div className={`relative group/list overflow-hidden ${cornerRadius}`}>
                         <div className={`max-h-[650px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar py-4 px-2`}>
                             <div className={`flex flex-col gap-6 ${autoScroll ? 'animate-cinematic' : ''}`}>
                                 {displayedReviews.map((review: any, i: number) => (
@@ -292,8 +294,6 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                                 ))}
                             </div>
                         </div>
-                        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white via-white/40 to-transparent pointer-events-none z-10"></div>
-                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none z-10"></div>
                     </div>
                 ) : (
                     <div className={`max-h-[850px] ${autoScroll ? 'overflow-hidden' : 'overflow-y-auto'} no-scrollbar p-2`}>
@@ -330,12 +330,13 @@ export function ReviewCard({ review, config, className = "" }: any) {
         verifiedBadgeStyle,
         verifiedBadgeLocation,
         showBadge,
-        verifiedBadgeCardPosition = 'TOP_RIGHT'
+        verifiedBadgeCardPosition = 'TOP_RIGHT',
+        cardColor
     } = config;
     return (
         <div
             className={`p-6 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col h-full bg-white relative group animate-in fade-in slide-in-from-bottom-2 duration-700 ${cornerRadius} ${className}`}
-            style={{ backgroundColor: secondaryColor }}
+            style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}
         >
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
@@ -356,7 +357,7 @@ export function ReviewCard({ review, config, className = "" }: any) {
                 </div>
             </div>
 
-            <p className="italic text-sm font-medium leading-relaxed flex-1" style={{ color: reviewTextColor }}>
+            <p className="italic text-sm font-medium leading-relaxed flex-1 break-words" style={{ color: reviewTextColor }}>
                 "{review.text}"
             </p>
 
@@ -388,7 +389,9 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
         visualType = 'IMAGE', // IMAGE, UGC
         visualLayout = 'GRID', // GRID, CAROUSEL, STORY
         gridCols = 3,
-        gridRows = 2
+        gridRows = 2,
+        backgroundColor,
+        cardColor
     } = config;
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -418,10 +421,10 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
 
     const gridColsClass = {
         1: 'grid-cols-1',
-        2: 'grid-cols-2',
-        3: 'grid-cols-3',
-        4: 'grid-cols-4',
-    }[gridCols as 1 | 2 | 3 | 4] || 'grid-cols-3';
+        2: 'grid-cols-1 md:grid-cols-2',
+        3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+        4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+    }[gridCols as 1 | 2 | 3 | 4] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
 
     const renderMedia = (item: any) => {
         if (visualType === 'UGC') {
@@ -556,8 +559,8 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
                     {data.map((item) => (
                         <div
                             key={item.id}
-                            className={`flex-shrink-0 w-[300px] h-[450px] group relative bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 snap-center ${cornerRadius}`}
-                            style={{ backgroundColor: secondaryColor }}
+                            className={`flex-shrink-0 w-[260px] md:w-[300px] h-[400px] md:h-[450px] group relative bg-white border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 snap-center ${cornerRadius}`}
+                            style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}
                         >
                             <div className="h-[65%] relative overflow-hidden">
                                 {renderMedia(item)}
@@ -605,7 +608,7 @@ export function ImageTemplate({ reviews, config, fontClass }: any) {
         <div className={`max-w-7xl mx-auto px-4 ${fontClass}`}>
             <div className={`grid ${gridColsClass} gap-8`}>
                 {displayedData.map((item) => (
-                    <div key={item.id} className={`group relative bg-white border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${cornerRadius}`} style={{ backgroundColor: secondaryColor }}>
+                    <div key={item.id} className={`group relative bg-white border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${cornerRadius}`} style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}>
                         <div className={`absolute inset-0 overflow-hidden ${cornerRadius} pointer-events-none z-0`} />
                         <div className="aspect-[4/5] bg-slate-50 relative overflow-hidden">
                             {renderMedia(item)}
@@ -657,7 +660,9 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
         verifiedBadgeLocation = 'BOTH',
         verifiedBadgeCardPosition = 'TOP_RIGHT',
         aiIntent = 'TRIAL_VERDICT',
-        aiContent
+        aiContent,
+        backgroundColor,
+        cardColor
     } = config;
 
     const insights = campaign?.insights;
@@ -710,7 +715,7 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
         <div className={`max-w-4xl mx-auto ${fontClass}`}>
             <div
                 className={`relative p-8 md:p-14 border border-slate-200/60 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] transition-all duration-700 ${cornerRadius}`}
-                style={{ backgroundColor: secondaryColor }}
+                style={{ backgroundColor: cardColor || secondaryColor || '#FFFFFF' }}
             >
                 {/* Premium Mesh Gradient Background - Clipped container */}
                 <div className={`absolute inset-0 opacity-10 pointer-events-none overflow-hidden ${cornerRadius}`}>
@@ -746,7 +751,7 @@ export function AIGenTemplate({ reviews, campaign, config, fontClass }: any) {
 
                 {/* Main Insight Content */}
                 <div className="relative z-10 mb-14">
-                    <h3 className="text-4xl md:text-5xl font-black mb-8 tracking-tight leading-[1.1]" style={{ color: nameColor }}>
+                    <h3 className="text-3xl md:text-5xl font-black mb-8 tracking-tight leading-[1.1]" style={{ color: nameColor }}>
                         {content.title}
                     </h3>
 
