@@ -34,6 +34,7 @@ export const widgetRouter = createTRPCRouter({
           name: input.name,
           campaignId: input.campaignId,
           template: input.template,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           settings: input.settings ?? {},
         },
       });
