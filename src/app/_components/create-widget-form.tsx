@@ -9,8 +9,12 @@ import Link from "next/link";
 export function CreateWidgetForm({ campaignId }: { campaignId: string }) {
     const router = useRouter();
     const [name, setName] = useState("");
+    const [ratingQuestionId, setRatingQuestionId] = useState("");
+    const [selectedTextQuestionIds, setSelectedTextQuestionIds] = useState<string[]>([]);
 
-    // Default to AGGREGATED template
+    // Fetch questions for this campaign
+    const { data: questions, isLoading: questionsLoading } = api.campaign.getQuestions.useQuery({ campaignId });
+
     const createWidget = api.widget.create.useMutation({
         onSuccess: (widget) => {
             router.push(`/widget/${widget.id}/edit`);
@@ -18,12 +22,26 @@ export function CreateWidgetForm({ campaignId }: { campaignId: string }) {
         }
     });
 
+    const handleToggleTextQuestion = (questionId: string) => {
+        setSelectedTextQuestionIds((prev) =>
+            prev.includes(questionId)
+                ? prev.filter((id) => id !== questionId)
+                : [...prev, questionId]
+        );
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         createWidget.mutate({
             name,
             campaignId,
-            template: "AGGREGATED" // Default value
+            template: "AGGREGATED",
+            settings: {
+                ratingQuestionId: ratingQuestionId || undefined,
+                reviewTextQuestionIds: selectedTextQuestionIds.length > 0
+                    ? selectedTextQuestionIds.join(",")
+                    : undefined,
+            },
         });
     };
 
@@ -40,7 +58,7 @@ export function CreateWidgetForm({ campaignId }: { campaignId: string }) {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
                 <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">Widget Name</label>
                     <input
@@ -51,6 +69,48 @@ export function CreateWidgetForm({ campaignId }: { campaignId: string }) {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
+                </div>
+
+                {/* Question Selectors */}
+                <div className="space-y-4 pt-2 border-t border-slate-100">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider pt-3">Question Mapping</p>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Rating Question</label>
+                        <p className="text-xs text-slate-400 mb-2">Which question captures the star rating?</p>
+                        <select
+                            value={ratingQuestionId}
+                            onChange={(e) => setRatingQuestionId(e.target.value)}
+                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white text-slate-900 text-sm"
+                        >
+                            <option value="">— Select question —</option>
+                            {questionsLoading && <option disabled>Loading...</option>}
+                            {questions?.map((q) => (
+                                <option key={q.id} value={q.id}>
+                                    {q.text}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Review Text Questions</label>
+                        <p className="text-xs text-slate-400 mb-2">Select one or more questions that capture review text. The first non-empty response per reviewer will be used.</p>
+                        {questionsLoading && <p className="text-xs text-slate-400">Loading...</p>}
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                            {questions?.map((q) => (
+                                <label key={q.id} className="flex items-start gap-3 p-2.5 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50/30 transition cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedTextQuestionIds.includes(q.id)}
+                                        onChange={() => handleToggleTextQuestion(q.id)}
+                                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                    />
+                                    <span className="text-sm text-slate-700">{q.text}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <button

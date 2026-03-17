@@ -46,6 +46,8 @@ interface WidgetPreviewProps {
         dateFilter?: 'ALL' | '7D' | '30D' | '90D' | '1Y';
         headerTitle?: string;
         headerFontSize?: string;
+        ratingQuestionId?: string;
+        reviewTextQuestionIds?: string;
     };
     isMobilePreview?: boolean;
 }
@@ -64,7 +66,13 @@ export function WidgetPreview({ widgetId, template, config }: WidgetPreviewProps
         );
     }
 
-    const [reviews] = api.review.getByCampaign.useSuspenseQuery({ campaignId: widget.campaignId });
+    const [reviews] = api.review.getByCampaign.useSuspenseQuery({
+        campaignId: widget.campaignId,
+        ratingQuestionId: config.ratingQuestionId,
+        reviewTextQuestionIds: config.reviewTextQuestionIds,
+        dateFilter: config.dateFilter,
+        limit: config.reviewLimit,
+    });
 
 
     // Use dummy data if no real reviews exist

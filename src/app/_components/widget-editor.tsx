@@ -32,6 +32,10 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     const [headerTitle, setHeaderTitle] = useState(initialWidget.settings?.headerTitle || "Customer Feedback");
     const [headerFontSize, setHeaderFontSize] = useState(initialWidget.settings?.headerFontSize || "text-3xl");
 
+    // Question mapping (set during widget creation, preserved on save)
+    const ratingQuestionId = initialWidget.settings?.ratingQuestionId || "";
+    const reviewTextQuestionIds = initialWidget.settings?.reviewTextQuestionIds || "";
+
     // Advanced Layout State
     const [layoutType, setLayoutType] = useState(initialWidget.settings?.layoutType || "GRID"); // GRID, LIST, CAROUSEL
     const [gridCols, setGridCols] = useState(initialWidget.settings?.gridCols || 3);
@@ -108,6 +112,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                         visualLayout,
                         headerTitle,
                         headerFontSize,
+                        ratingQuestionId,
+                        reviewTextQuestionIds,
                         backgroundColor,
                         cardColor,
                         reviewSentiment,
@@ -192,6 +198,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                 visualType,
                 visualLayout,
                 headerTitle,
+                headerFontSize,
+                ratingQuestionId,
+                reviewTextQuestionIds,
                 backgroundColor,
                 cardColor,
                 reviewSentiment,
@@ -925,7 +934,9 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         reviewLimit,
                                         dateFilter,
                                         headerTitle,
-                                        headerFontSize
+                                        headerFontSize,
+                                        ratingQuestionId,
+                                        reviewTextQuestionIds
                                     }}
                                 />
                             </div>
