@@ -31,21 +31,31 @@ export default function EmbedViewer({ id }: { id: string }) {
     const { template, settings, reviews: widgetReviews } = widget;
     const reviews = widgetReviews || [];
 
-    // Use dummy data if no real reviews exist
+    // Dummy data with Indian names (temporary)
     const DUMMY_REVIEWS = [
-        { rating: 5, reviewer: "Sarah Jenkins", text: "Absolutely love this product! It has completely changed my daily routine for the better. Highly recommended to everyone who wants quality." },
-        { rating: 5, reviewer: "Michael Chen", text: "Great quality and fast shipping. The customer service team was also super helpful when I had a question about the delivery." },
-        { rating: 4, reviewer: "Jessica Parker", text: "Very good value for the price. I deducted one star because the packaging was slightly damaged, but the product was fine." },
-        { rating: 5, reviewer: "David Rodriguez", text: "Exceeded my expectations. I will definitely be a returning customer. Five stars all the way for this amazing experience!" },
-        { rating: 5, reviewer: "Emily Watson", text: "Simple, effective, and elegant. Exactly what I was looking for. Thank you for such a great design and functionality!" },
-        { rating: 4, reviewer: "Chris Evans", text: "Solid performance. Does exactly what it says on the tin. I've been using it for a week now and no complaints." },
-        { rating: 5, reviewer: "Natalie Port", text: "Beautifully crafted. You can tell a lot of thought went into this. My whole family is now using it." },
-        { rating: 5, reviewer: "Tom Hardy", text: "Absolute beast of a product. Rugged, reliable, and looks great in any setting. 10/10 would buy again." },
-        { rating: 4, reviewer: "Scarlett J.", text: "Impressive features. A little bit of a learning curve at first but once you get it, it's indispensable." },
-        { rating: 5, reviewer: "Robert D. Jr", text: "I don't usually leave reviews, but this deserved it. Exceptional quality and attention to detail." }
+        { rating: 5, reviewer: "Priya Sharma", text: "Really happy with this product. My dog finishes every meal now and seems much more energetic throughout the day." },
+        { rating: 5, reviewer: "Rahul Verma", text: "Switched from another brand last month. The quality difference is very noticeable. Will keep buying this." },
+        { rating: 4, reviewer: "Ananya Gupta", text: "Good product overall. Packaging could be better but the food itself is great. My pet loves it." },
+        { rating: 5, reviewer: "Vikram Singh", text: "Best dog food we have tried so far. No stomach issues at all after the switch. That was my biggest concern." },
+        { rating: 5, reviewer: "Neha Patel", text: "Simple, clean ingredients. That matters a lot to us. Our vet also recommended this brand specifically." },
+        { rating: 4, reviewer: "Arjun Reddy", text: "Solid quality for the price. Been using it for three weeks and my dog has had no complaints. Would recommend." },
+        { rating: 5, reviewer: "Kavitha Nair", text: "My two dogs absolutely love this. I have tried many brands and this is the one they both eat without fuss." },
+        { rating: 5, reviewer: "Rohan Mehta", text: "Great texture and smell. Even our picky eater goes through the bowl in minutes. Very impressed." },
+        { rating: 4, reviewer: "Simran Dhurla", text: "Switched from home food and honestly it has been much more convenient. The dogs seem healthier too." },
+        { rating: 5, reviewer: "Aditya Joshi", text: "Ordered twice already. Consistent quality both times. Delivery was also quick and well packed." },
+        { rating: 5, reviewer: "Meera Krishnan", text: "Our golden retriever has sensitive skin and this food has really helped. Coat looks shinier now." },
+        { rating: 4, reviewer: "Sanjay Deshmukh", text: "Good value for money. Not the cheapest but you can tell the ingredients are better than most options." },
+        { rating: 5, reviewer: "Pooja Iyer", text: "Finally found something that works for our puppy. She eats it happily and digestion has been smooth." },
+        { rating: 3, reviewer: "Bhavya Chauhan", text: "Decent product. My dog eats it fine but I expected a bit more variety in flavours at this price." },
+        { rating: 5, reviewer: "Manish Tiwari", text: "Recommended by a friend and now I see why. Top quality food and my lab has never been this active." },
+        { rating: 5, reviewer: "Shashank Kumar", text: "Really happy with this product. My dog finishes every meal now. Will definitely continue buying." },
+        { rating: 4, reviewer: "Divya Rao", text: "Good ingredients list and my dog enjoys the taste. Only wish they had a larger pack option available." },
+        { rating: 5, reviewer: "Karthik Menon", text: "Vet approved and dog approved. What more can you ask for? Highly recommend to all pet parents." },
+        { rating: 2, reviewer: "Ritu Saxena", text: "My dog did not take to this food at all. Had to mix it with other food to get him to eat it." },
+        { rating: 5, reviewer: "Amit Chopra", text: "Premium quality at a fair price. Both our dogs eat this and we have noticed better energy levels." }
     ];
 
-    let displayReviews: any[] = reviews.length > 0 ? reviews : DUMMY_REVIEWS;
+    let displayReviews: any[] = DUMMY_REVIEWS;
     const config = settings as any;
 
     // Apply review filters
