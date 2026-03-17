@@ -47,10 +47,10 @@ export async function GET(
     const baseUrl = "${origin}";
     iframe.src = baseUrl + "/widget/" + "${id}";
     iframe.style.width = '100%';
-    iframe.style.height = '800px';
+    iframe.style.height = '100vh';
     iframe.style.border = 'none';
     iframe.style.overflow = 'hidden';
-    iframe.style.backgroundColor = 'white'; // Ensure it's not invisible on dark backgrounds
+    iframe.style.backgroundColor = 'transparent';
     iframe.style.transition = 'height 0.3s ease';
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('frameborder', '0');

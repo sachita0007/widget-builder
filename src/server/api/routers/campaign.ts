@@ -28,9 +28,9 @@ const MOCK_QUESTIONS: Record<
     { id: "q1-whiskas-rating", text: "How would you rate Whiskas?", inputType: "select_single" },
     { id: "q2-whiskas-review", text: "Tell us about your experience", inputType: "text_long" },
   ],
-  "pedigree-aug-2025": [
-    { id: "q1-pedigree-rating", text: "Rate Pedigree overall", inputType: "select_single" },
-    { id: "q2-pedigree-review", text: "What did your dog think?", inputType: "text_long" },
+  "7deee9d9-8cf6-400e-a6ce-6b5ca3c026f4": [
+    { id: "49c142f8-fd0b-47f8-b76d-467000325889", text: "Rate Pedigree overall", inputType: "select_single" },
+    { id: "af1ccda2-d6d3-4652-bac8-e78b0f13d3fe", text: "What did your dog think?", inputType: "text_long" },
   ],
   "dove-skincare-2025": [
     { id: "q1-dove-rating", text: "How would you rate Dove?", inputType: "select_single" },

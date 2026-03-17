@@ -1,22 +1,6 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { env } from "~/env";
-
-interface GoReviewEntry {
-  claimant_id: string;
-  rating: number;
-  text: string;
-  reviewer: string;
-  verified: boolean;
-  created_at: string;
-}
-
-interface GoStandardResponse {
-  success: boolean;
-  message?: string;
-  data?: GoReviewEntry[];
-}
 
 export const widgetRouter = createTRPCRouter({
   create: publicProcedure
@@ -34,6 +18,7 @@ export const widgetRouter = createTRPCRouter({
           name: input.name,
           campaignId: input.campaignId,
           template: input.template,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           settings: input.settings ?? {},
         },
       });
@@ -94,63 +79,6 @@ export const widgetRouter = createTRPCRouter({
 
       if (!widget) return null;
 
-      const settings = widget.settings as {
-        ratingQuestionId?: string;
-        reviewTextQuestionIds?: string;
-        dateFilter?: string;
-        reviewLimit?: number;
-      } | null;
-
-      // Fetch reviews from Go backend
-      let reviews: Array<{
-        claimantId: string;
-        rating: number;
-        text: string;
-        reviewer: string;
-        verified: boolean;
-        createdAt: string;
-      }> = [];
-
-      if (settings?.ratingQuestionId || settings?.reviewTextQuestionIds) {
-        try {
-          const url = new URL(
-            `${env.GO_BACKEND_URL}/api/v1/claimant/getWidgetReviews`,
-          );
-          url.searchParams.set("campaign_id", widget.campaignId);
-          if (settings.ratingQuestionId)
-            url.searchParams.set(
-              "rating_question_id",
-              settings.ratingQuestionId,
-            );
-          if (settings.reviewTextQuestionIds)
-            url.searchParams.set(
-              "review_text_question_ids",
-              settings.reviewTextQuestionIds,
-            );
-          if (settings.dateFilter && settings.dateFilter !== "ALL")
-            url.searchParams.set("date_filter", settings.dateFilter);
-          if (settings.reviewLimit)
-            url.searchParams.set("limit", String(settings.reviewLimit));
-
-          const res = await fetch(url.toString());
-          if (res.ok) {
-            const json = (await res.json()) as GoStandardResponse;
-            if (json.success && json.data) {
-              reviews = json.data.map((r) => ({
-                claimantId: r.claimant_id,
-                rating: r.rating,
-                text: r.text,
-                reviewer: r.reviewer,
-                verified: r.verified,
-                createdAt: r.created_at,
-              }));
-            }
-          }
-        } catch (err) {
-          console.error("Failed to fetch reviews from Go backend:", err);
-        }
-      }
-
-      return { ...widget, reviews };
+      return { ...widget, reviews: [] };
     }),
 });

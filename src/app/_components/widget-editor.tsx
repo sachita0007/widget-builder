@@ -34,7 +34,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
     // Question mapping (set during widget creation, preserved on save)
     const ratingQuestionId = initialWidget.settings?.ratingQuestionId || "";
-    const reviewTextQuestionIds = initialWidget.settings?.reviewTextQuestionIds || "";
+    const reviewTextQuestionIds = initialWidget.settings?.reviewTextQuestionIds || initialWidget.settings?.reviewTextQuestionId || "";
 
     // Advanced Layout State
     const [layoutType, setLayoutType] = useState(initialWidget.settings?.layoutType || "GRID"); // GRID, LIST, CAROUSEL
@@ -49,6 +49,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
     // Background colors
     const [backgroundColor, setBackgroundColor] = useState(initialWidget.settings?.backgroundColor || "#F8FAFC");
     const [cardColor, setCardColor] = useState(initialWidget.settings?.cardColor || "#FFFFFF");
+    const [cardBorderColor, setCardBorderColor] = useState(initialWidget.settings?.cardBorderColor || "#E2E8F0");
+    const [cardShadowColor, setCardShadowColor] = useState(initialWidget.settings?.cardShadowColor || "#00000010");
 
     // Review filters
     const [reviewSentiment, setReviewSentiment] = useState(initialWidget.settings?.reviewSentiment || "ALL"); // ALL, POSITIVE, NEGATIVE
@@ -57,6 +59,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
     const [hasChanges, setHasChanges] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [copiedIframe, setCopiedIframe] = useState(false);
     const [showEmbedModal, setShowEmbedModal] = useState(false);
     const [saveStatus, setSaveStatus] = useState<'IDLE' | 'SAVING' | 'SAVED' | 'ERROR'>('IDLE');
 
@@ -116,6 +119,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                         reviewTextQuestionIds,
                         backgroundColor,
                         cardColor,
+                        cardBorderColor,
+                        cardShadowColor,
                         reviewSentiment,
                         reviewLimit,
                         dateFilter
@@ -161,6 +166,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
         if (key === 'headerFontSize') setHeaderFontSize(value);
         if (key === 'backgroundColor') setBackgroundColor(value);
         if (key === 'cardColor') setCardColor(value);
+        if (key === 'cardBorderColor') setCardBorderColor(value);
+        if (key === 'cardShadowColor') setCardShadowColor(value);
         if (key === 'reviewSentiment') setReviewSentiment(value);
         if (key === 'reviewLimit') setReviewLimit(value);
         if (key === 'dateFilter') setDateFilter(value);
@@ -655,6 +662,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         {[
                                             { label: 'Widget', value: backgroundColor, key: 'backgroundColor' },
                                             { label: 'Card', value: cardColor, key: 'cardColor' },
+                                            { label: 'Card Border', value: cardBorderColor, key: 'cardBorderColor' },
+                                            { label: 'Card Shadow', value: cardShadowColor, key: 'cardShadowColor' },
                                         ].map((c) => (
                                             <div key={c.key} className="flex items-center justify-between p-3">
                                                 <label className="text-sm font-medium text-gray-700">{c.label}</label>
@@ -901,7 +910,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
                     <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 flex items-start md:items-center justify-center">
                         <div className="w-full max-w-6xl py-4">
-                            <div className="bg-white border border-gray-200 p-2 md:p-4 rounded-xl shadow-sm overflow-hidden">
+                            <div className="border border-gray-200 rounded-xl shadow-sm overflow-hidden" style={{ backgroundColor: backgroundColor || '#F8FAFC' }}>
                                 <WidgetPreview
                                     widgetId={widgetId}
                                     template={template}
@@ -930,6 +939,8 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                         visualLayout,
                                         backgroundColor,
                                         cardColor,
+                                        cardBorderColor,
+                                        cardShadowColor,
                                         reviewSentiment,
                                         reviewLimit,
                                         dateFilter,
@@ -986,7 +997,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                 </div>
                             </div>
 
-                            <div className="mt-4 flex justify-end">
+                            <div className="mt-3 flex justify-end">
                                 <button
                                     onClick={() => {
                                         const embedCode = `<script src="${window.location.origin}/api/widget/${widgetId}/embed" data-widget-id="${widgetId}"></script>`;
@@ -1001,6 +1012,35 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
                                 >
                                     {copied ? 'Copied!' : 'Copy to clipboard'}
                                 </button>
+                            </div>
+
+                            <div className="mt-6 pt-6 border-t border-gray-200">
+                                <p className="text-sm font-medium text-gray-700 mb-2">Or use an iframe directly</p>
+                                <div className="bg-gray-900 rounded-lg p-4 relative group overflow-hidden">
+                                    <div className="font-mono text-xs leading-relaxed text-blue-300 break-all select-all">
+                                        <span className="text-pink-400">&lt;iframe</span> <br />
+                                        &nbsp;&nbsp;<span className="text-blue-400">src</span>=<span className="text-emerald-400">"{typeof window !== 'undefined' ? window.location.origin : ''}/widget/{widgetId}"</span> <br />
+                                        &nbsp;&nbsp;<span className="text-blue-400">style</span>=<span className="text-emerald-400">"width:100%;height:100vh;border:none;"</span> <br />
+                                        &nbsp;&nbsp;<span className="text-blue-400">frameborder</span>=<span className="text-emerald-400">"0"</span><br />
+                                        <span className="text-pink-400">&gt;&lt;/iframe&gt;</span>
+                                    </div>
+                                </div>
+                                <div className="mt-3 flex justify-end">
+                                    <button
+                                        onClick={() => {
+                                            const iframeCode = `<iframe src="${window.location.origin}/widget/${widgetId}" style="width:100%;height:100vh;border:none;" frameborder="0"></iframe>`;
+                                            navigator.clipboard.writeText(iframeCode);
+                                            setCopiedIframe(true);
+                                            setTimeout(() => setCopiedIframe(false), 2000);
+                                        }}
+                                        className={`px-5 py-2 rounded text-sm font-medium transition-colors ${copiedIframe
+                                            ? 'bg-green-600 text-white'
+                                            : 'bg-blue-900 text-white hover:bg-blue-800'
+                                            }`}
+                                    >
+                                        {copiedIframe ? 'Copied!' : 'Copy to clipboard'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
