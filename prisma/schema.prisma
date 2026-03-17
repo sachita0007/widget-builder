@@ -17,13 +17,3 @@ model Widget {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
-
-model Review {
-  id         String   @id @default(cuid())
-  rating     Int
-  text       String
-  reviewer   String
-  verified   Boolean  @default(true)
-  campaignId String
-  createdAt  DateTime @default(now())
-}

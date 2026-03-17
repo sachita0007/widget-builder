@@ -131,16 +131,6 @@ exports.Prisma.WidgetScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ReviewScalarFieldEnum = {
-  id: 'id',
-  rating: 'rating',
-  text: 'text',
-  reviewer: 'reviewer',
-  verified: 'verified',
-  campaignId: 'campaignId',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -169,8 +159,7 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Widget: 'Widget',
-  Review: 'Review'
+  Widget: 'Widget'
 };
 
 /**

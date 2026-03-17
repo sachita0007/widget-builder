@@ -39,6 +39,11 @@ interface WidgetPreviewProps {
         aiContent?: any;
         visualType?: 'IMAGE' | 'UGC';
         visualLayout?: 'GRID' | 'CAROUSEL' | 'STORY';
+        backgroundColor?: string;
+        cardColor?: string;
+        reviewSentiment?: 'ALL' | 'POSITIVE' | 'NEGATIVE';
+        reviewLimit?: number;
+        dateFilter?: 'ALL' | '7D' | '30D' | '90D' | '1Y';
     };
     isMobilePreview?: boolean;
 }
@@ -74,7 +79,23 @@ export function WidgetPreview({ widgetId, template, config }: WidgetPreviewProps
         { rating: 5, reviewer: "Robert D. Jr", text: "I don't usually leave reviews, but this deserved it. Exceptional quality and attention to detail." }
     ];
 
-    const displayReviews = (reviews && reviews.length > 0) ? reviews : DUMMY_REVIEWS;
+    let displayReviews: any[] = (reviews && reviews.length > 0) ? reviews : DUMMY_REVIEWS;
+
+    // Apply review filters
+    if (config.reviewSentiment === 'POSITIVE') {
+        displayReviews = displayReviews.filter((r: any) => r.rating >= 4);
+    } else if (config.reviewSentiment === 'NEGATIVE') {
+        displayReviews = displayReviews.filter((r: any) => r.rating <= 3);
+    }
+    if (config.dateFilter && config.dateFilter !== 'ALL') {
+        const cutoff = new Date();
+        if (config.dateFilter === '7D') cutoff.setDate(cutoff.getDate() - 7);
+        else if (config.dateFilter === '30D') cutoff.setDate(cutoff.getDate() - 30);
+        else if (config.dateFilter === '90D') cutoff.setDate(cutoff.getDate() - 90);
+        else if (config.dateFilter === '1Y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+        displayReviews = displayReviews.filter((r: any) => r.createdAt ? new Date(r.createdAt) >= cutoff : true);
+    }
+    displayReviews = displayReviews.slice(0, config.reviewLimit ?? 10);
 
     // Determine font class based on config
     const fontClass = config.fontStyle === 'serif' ? 'font-serif' : config.fontStyle === 'mono' ? 'font-mono' : 'font-sans';
@@ -82,7 +103,6 @@ export function WidgetPreview({ widgetId, template, config }: WidgetPreviewProps
     // Pass everything to template renderers
     const props = {
         campaignId: widget.campaignId,
-        campaign: widget.campaign,
         reviews: displayReviews,
         config,
         fontClass
