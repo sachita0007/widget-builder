@@ -34,7 +34,7 @@ export function WidgetEditor({ widgetId, initialWidget }: WidgetEditorProps) {
 
     // Question mapping (set during widget creation, preserved on save)
     const ratingQuestionId = initialWidget.settings?.ratingQuestionId || "";
-    const reviewTextQuestionIds = initialWidget.settings?.reviewTextQuestionIds || "";
+    const reviewTextQuestionIds = initialWidget.settings?.reviewTextQuestionIds || initialWidget.settings?.reviewTextQuestionId || "";
 
     // Advanced Layout State
     const [layoutType, setLayoutType] = useState(initialWidget.settings?.layoutType || "GRID"); // GRID, LIST, CAROUSEL

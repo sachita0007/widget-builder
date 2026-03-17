@@ -4,7 +4,7 @@ import { DashboardHeader } from "./_components/dashboard-header";
 
 const CAMPAIGNS = [
   { id: "whiskas-july-2025", name: "Whiskas July 2025", brand: "Whiskas" },
-  { id: "pedigree-aug-2025", name: "Pedigree August 2025", brand: "Pedigree" },
+  { id: "7deee9d9-8cf6-400e-a6ce-6b5ca3c026f4", name: "Pedigree August 2025", brand: "Pedigree" },
   { id: "dove-skincare-2025", name: "Dove Skin Care 2025", brand: "Dove" },
   { id: "pepsi-summer-2025", name: "Pepsi Summer Blast", brand: "Pepsi" },
 ];
