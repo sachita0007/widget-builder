@@ -231,17 +231,17 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
             }}>
                 {/* Background clip wrapper */}
                 <div className={`absolute inset-0 ${cornerRadius} overflow-hidden pointer-events-none`} />
-                <div className="p-5 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-12">
+                <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-12">
                     {/* Left: Main Rating Info */}
-                    <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 flex-1">
+                    <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
                         <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                            <div className="text-5xl sm:text-7xl font-black tracking-tighter leading-none mb-2 sm:mb-3" style={{ color: nameColor }}>{avg}</div>
-                            <div className="flex text-yellow-400 gap-1 mb-1 sm:mb-2" style={{ color: starColor }}>
+                            <div className="text-7xl font-black tracking-tighter leading-none mb-3" style={{ color: nameColor }}>{avg}</div>
+                            <div className="flex text-yellow-400 gap-1 mb-2" style={{ color: starColor }}>
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                    <span key={i} className={`text-lg sm:text-xl ${i < Math.round(Number(avg)) ? "" : "text-gray-200"}`}>★</span>
+                                    <span key={i} className={`text-xl ${i < Math.round(Number(avg)) ? "" : "text-gray-200"}`}>★</span>
                                 ))}
                             </div>
-                            <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest leading-none opacity-70" style={{ color: reviewTextColor }}>Overall Rating</div>
+                            <div className="text-[11px] font-black uppercase tracking-widest leading-none opacity-70" style={{ color: reviewTextColor }}>Overall Rating</div>
                         </div>
 
                         <div className="hidden sm:block w-px h-24 bg-gradient-to-b from-transparent via-gray-100 to-transparent"></div>
@@ -249,7 +249,7 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
                         <div className="max-w-xs">
                             <h3 className={`${config.headerFontSize || 'text-3xl'} font-black tracking-tight text-center sm:text-left leading-tight mb-2`} style={{ color: nameColor }}>{config.headerTitle || 'Customer Feedback'}</h3>
                             <div className="flex flex-wrap items-center gap-3 justify-center sm:justify-start">
-                                <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on {reviews.length} reviews</p>
+                                <p className="text-xs font-bold uppercase tracking-widest opacity-80" style={{ color: reviewTextColor }}>Based on 1000+ reviews</p>
                                 {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'HEADER') && showBadge !== false) && (
                                     <div className="relative z-50">
                                         <VerifiedShield style={verifiedBadgeStyle} tooltip="Verified by Freestand" />
@@ -261,14 +261,14 @@ export function AdvancedReviewTemplate({ reviews, config, fontClass }: any) {
 
                     {/* Right: Detailed Breakdown */}
                     {showAggregate && (
-                        <div className="w-full sm:w-80 shrink-0 border-t sm:border-t-0 sm:border-l border-gray-100 pt-4 sm:pt-0 sm:pl-12">
-                            <div className="text-[10px] font-black uppercase tracking-widest mb-4 sm:mb-6 opacity-70 text-center sm:text-left" style={{ color: reviewTextColor }}>Rating Distribution</div>
-                            <div className="flex flex-col gap-2 sm:gap-3">
+                        <div className="w-full sm:w-80 shrink-0 border-t sm:border-t-0 sm:border-l border-gray-100 pt-8 sm:pt-0 sm:pl-12">
+                            <div className="text-[10px] font-black uppercase tracking-widest mb-6 opacity-70 text-center sm:text-left" style={{ color: reviewTextColor }}>Rating Distribution</div>
+                            <div className="flex flex-col gap-3">
                                 {[5, 4, 3, 2, 1].map((star) => {
                                     const count = reviews.filter((r: any) => r.rating === star).length;
                                     const pct = reviews.length ? Math.round((count / reviews.length) * 100) : 0;
                                     return (
-                                        <div key={star} className="flex items-center gap-3 sm:gap-4 group/bar">
+                                        <div key={star} className="flex items-center gap-4 group/bar">
                                             <div className="flex items-center gap-1.5 w-7 shrink-0">
                                                 <span style={{ color: reviewTextColor }} className="text-xs font-black">{star}</span>
                                                 <span style={{ color: starColor }} className="text-[11px]">★</span>
@@ -368,6 +368,9 @@ export function ReviewCard({ review, config, className = "" }: any) {
                     </div>
                     <div>
                         <div className="font-extrabold text-sm leading-none mb-1" style={{ color: nameColor }}>{review.reviewer}</div>
+                        {review.createdAt && (
+                            <div className="text-[10px] text-gray-400 mt-0.5">Reviewed on {new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                        )}
                     </div>
                 </div>
                 <div className="flex text-[10px]" style={{ color: starColor }}>
@@ -381,8 +384,12 @@ export function ReviewCard({ review, config, className = "" }: any) {
                 "{review.text}"
             </p>
 
-            <div className="mt-5 pt-5 border-t border-gray-50 flex items-center justify-between opacity-50 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Verified Review</span>
+            <div className="mt-5 pt-5 border-t border-gray-50 flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-gray-500 shrink-0" style={{ verticalAlign: 'middle' }}>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M9 12l2 2 4-4" />
+                </svg>
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter leading-none">Verified Review</span>
             </div>
 
             {((verifiedBadgeLocation === 'BOTH' || verifiedBadgeLocation === 'CARDS') && showBadge !== false) && (
